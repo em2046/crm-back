@@ -19,12 +19,12 @@ export class Menu {
    * 内部名称
    */
   @Index('menu_name_index', { unique: true })
-  @Column({ length: 255, nullable: false })
+  @Column({ length: 256, nullable: false })
   name: string;
 
   /**
    * 显示名称
    */
-  @Column({ length: 255, nullable: false })
+  @Column({ length: 256, nullable: false })
   title: string;
 }

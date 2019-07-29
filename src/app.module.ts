@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MenuModule } from './menu/menu.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { join } from 'path';
       synchronize: true,
     }),
     MenuModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
