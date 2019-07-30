@@ -1,23 +1,9 @@
-const crypto = require('crypto');
-
-function pbkdf2Promise(password: string) {
-  return new Promise(resolve => {
-    crypto.pbkdf2(password, 'salt', 100000, 64, 'sha512', (err, derivedKey) => {
-      if (err) {
-        throw err;
-      }
-      const encrypted: string = derivedKey.toString('hex');
-
-      resolve(encrypted);
-    });
-  });
-}
-
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import Utils from '../utils/utils';
 
 @Injectable()
 export class UserService {
@@ -32,7 +18,10 @@ export class UserService {
     user.email = createUserDto.email;
     user.avatar = createUserDto.avatar;
 
-    user.password = await pbkdf2Promise(createUserDto.password);
+    const salt = await Utils.randomBytesPromise();
+    user.salt = salt;
+
+    user.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
 
     return await this.userRepository.save(user);
   }

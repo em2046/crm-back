@@ -25,8 +25,14 @@ export class User {
   /**
    * 密码
    */
-  @Column({ length: 512, nullable: false })
+  @Column({ length: 256, nullable: false })
   password: string;
+
+  /**
+   * 盐
+   */
+  @Column({ length: 256, nullable: false })
+  salt: string;
 
   /**
    * 头像
