@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MenuModule } from './menu/menu.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { MenuModule } from './menu/menu.module';
 import { UserModule } from './user/user.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     }),
     MenuModule,
     UserModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
