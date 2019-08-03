@@ -23,7 +23,7 @@ export default class Utils {
    * @param size 结果长度
    */
   static randomBytesPromise(size = 256) {
-    return new Promise<string>((resolve) => {
+    return new Promise<string>(resolve => {
       crypto.randomBytes(size / 2, (err, buf) => {
         if (err) {
           throw err;

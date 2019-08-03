@@ -12,11 +12,11 @@ export class CreateMenuDto {
   readonly parent: string;
 
   @IsNotEmpty()
-  @Length(2, 255)
+  @Length(2, 256)
   @Matches(/^[\w]+$/)
   readonly name: string;
 
   @IsNotEmpty()
-  @Length(1, 255)
+  @Length(1, 256)
   readonly title: string;
 }
