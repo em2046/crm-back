@@ -2,6 +2,11 @@ import * as crypto from 'crypto';
 
 export default class Utils {
   /**
+   * 标识符规则
+   */
+  static identifierRule = /^[a-zA-Z][\w\-]*$/;
+
+  /**
    * 使用密码和盐生成安全存储字符串
    * @param password 密码
    * @param salt 盐

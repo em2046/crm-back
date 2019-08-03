@@ -9,7 +9,7 @@ export class User {
   uuid: string;
 
   /**
-   * 用户名
+   * 系统用户名
    */
   @Index('user_name_index', { unique: true })
   @Column({ length: 256, nullable: false })
@@ -37,6 +37,6 @@ export class User {
   /**
    * 头像
    */
-  @Column({ length: 4096 })
+  @Column({ length: 4096, nullable: true })
   avatar: string;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 /**
  * 用户类型
@@ -122,6 +122,13 @@ export class Customer {
   uuid: string;
 
   /**
+   * 客户用户名
+   */
+  @Index('customer_name_index', { unique: true })
+  @Column({ length: 256, nullable: false })
+  name: string;
+
+  /**
    * 昵称
    */
   @Column({ length: 64, nullable: false })
@@ -130,7 +137,7 @@ export class Customer {
   /**
    * 真实姓名
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   realName: string;
 
   /**
@@ -140,6 +147,7 @@ export class Customer {
     type: 'enum',
     enum: CustomerType,
     default: CustomerType.NORMAL,
+    nullable: true,
   })
   type: CustomerType;
 
@@ -150,13 +158,14 @@ export class Customer {
     type: 'enum',
     enum: CustomerLevel,
     default: CustomerLevel.LEVEL_0,
+    nullable: true,
   })
   level: CustomerLevel;
 
   /**
    * 注册时间
    */
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', nullable: true })
   registrationTime: string;
 
   /**
@@ -166,32 +175,33 @@ export class Customer {
     type: 'enum',
     enum: CustomerGender,
     default: CustomerGender.UN_KNOW,
+    nullable: true,
   })
   gender: CustomerGender;
 
   /**
    * 生日
    */
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', nullable: true })
   birthday: string;
 
   /**
    * 城市
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   city: string;
 
   /**
    * 职业
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   occupation: string;
 
   /**
    * 年收入
    * 单位元
    */
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   annualIncome: number;
 
   /**
@@ -201,6 +211,7 @@ export class Customer {
     type: 'enum',
     enum: CustomerEducation,
     default: CustomerEducation.UN_KNOW,
+    nullable: true,
   })
   education: CustomerEducation;
 
@@ -211,36 +222,37 @@ export class Customer {
     type: 'enum',
     enum: CustomerMaritalStatus,
     default: CustomerMaritalStatus.UN_KNOW,
+    nullable: true,
   })
   maritalStatus: CustomerMaritalStatus;
 
   /**
    * 孩子数量
    */
-  @Column({ type: 'tinyint' })
+  @Column({ type: 'tinyint', nullable: true })
   numberOfChildren: number;
 
   /**
    * 手机号
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   phoneNumber: string;
 
   /**
    * 微信号
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   weChat: string;
 
   /**
    * QQ号
    */
-  @Column({ length: 64 })
+  @Column({ length: 64, nullable: true })
   qq: string;
 
   /**
    * 邮箱地址
    */
-  @Column({ length: 512 })
+  @Column({ length: 512, nullable: true })
   email: string;
 }

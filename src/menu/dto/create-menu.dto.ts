@@ -5,6 +5,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+import Utils from '../../utils/utils';
 
 export class CreateMenuDto {
   @IsOptional()
@@ -13,7 +14,7 @@ export class CreateMenuDto {
 
   @IsNotEmpty()
   @Length(2, 256)
-  @Matches(/^[\w]+$/)
+  @Matches(Utils.identifierRule)
   readonly name: string;
 
   @IsNotEmpty()

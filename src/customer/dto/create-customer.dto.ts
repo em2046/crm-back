@@ -9,6 +9,8 @@ import {
   Max,
   IsPhoneNumber,
   IsEmail,
+  IsAscii,
+  Matches,
 } from 'class-validator';
 import {
   CustomerEducation,
@@ -17,10 +19,16 @@ import {
   CustomerMaritalStatus,
   CustomerType,
 } from '../customer.entity';
+import Utils from '../../utils/utils';
 
 export class CreateCustomerDto {
   @IsNotEmpty()
-  @Length(0, 64)
+  @Length(4, 256)
+  @Matches(Utils.identifierRule)
+  readonly name: string;
+
+  @IsNotEmpty()
+  @Length(2, 64)
   readonly nickName: string;
 
   @IsOptional()
@@ -77,10 +85,12 @@ export class CreateCustomerDto {
 
   @IsOptional()
   @Length(0, 64)
+  @Matches(Utils.identifierRule)
   weChat: string;
 
   @IsOptional()
   @Length(0, 64)
+  @IsAscii()
   qq: string;
 
   @IsOptional()
