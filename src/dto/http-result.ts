@@ -1,7 +1,7 @@
 /**
  * 接口返回值
  */
-export class HttpResult<T> {
+export class HttpResult<T, U> {
   /**
    * 返回代号
    */
@@ -15,5 +15,5 @@ export class HttpResult<T> {
   /**
    * 返回数据
    */
-  data?: any;
+  data?: U;
 }

@@ -31,7 +31,7 @@ export class UserService {
    */
   async create(
     createUserDto: CreateUserDto,
-  ): Promise<HttpResult<UserCreateCode>> {
+  ): Promise<HttpResult<UserCreateCode, User>> {
     // 查询是否已有此用户名
     const foundUserName = await this.userRepository.findOne({
       name: createUserDto.name,
@@ -64,10 +64,18 @@ export class UserService {
 
     user.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
 
-    await this.userRepository.save(user);
+    const retUser = new User();
+
+    const savedUser = await this.userRepository.save(user);
+
+    retUser.name = savedUser.name;
+    retUser.email = savedUser.email;
+    retUser.avatar = savedUser.avatar;
+
     return {
       code: UserCreateCode.SUCCESS,
       message: 'create user success',
+      data: retUser,
     };
   }
 
@@ -75,7 +83,9 @@ export class UserService {
    * 登录
    * @param loginUserDto 登录用户信息
    */
-  async login(loginUserDto: LoginUserDto): Promise<HttpResult<UserLoginCode>> {
+  async login(
+    loginUserDto: LoginUserDto,
+  ): Promise<HttpResult<UserLoginCode, User>> {
     const errorRet = {
       code: UserLoginCode.NAME_OR_PASSWORD_INCORRECT,
       message: 'name or password incorrect',
