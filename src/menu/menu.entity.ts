@@ -12,7 +12,7 @@ export class Menu {
    * 父节点
    */
   @Index('menu_parent_index')
-  @Column({ length: 36 })
+  @Column({ length: 36, nullable: true })
   parent: string;
 
   /**

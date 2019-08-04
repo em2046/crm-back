@@ -9,7 +9,7 @@ export class User {
   uuid: string;
 
   /**
-   * 用户名
+   * 系统用户名
    */
   @Index('user_name_index', { unique: true })
   @Column({ length: 256, nullable: false })
@@ -25,12 +25,18 @@ export class User {
   /**
    * 密码
    */
-  @Column({ length: 512, nullable: false })
+  @Column({ length: 256, nullable: false })
   password: string;
+
+  /**
+   * 盐
+   */
+  @Column({ length: 256, nullable: false })
+  salt: string;
 
   /**
    * 头像
    */
-  @Column({ length: 4096 })
+  @Column({ length: 4096, nullable: true })
   avatar: string;
 }
