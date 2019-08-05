@@ -1,5 +1,16 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Permission } from '../permission/permission.entity';
 
+/**
+ * 角色
+ */
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn('uuid')
@@ -17,4 +28,8 @@ export class Role {
    */
   @Column({ length: 64 })
   title: string;
+
+  @ManyToMany(() => Permission)
+  @JoinTable()
+  permissions: Permission[];
 }

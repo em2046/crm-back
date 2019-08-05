@@ -1,5 +1,8 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
+/**
+ * 权限
+ */
 @Entity()
 export class Permission {
   @PrimaryGeneratedColumn('uuid')

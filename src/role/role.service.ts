@@ -5,6 +5,7 @@ import { Role } from './role.entity';
 import { Repository } from 'typeorm';
 import { HttpResult } from '../dto/http-result';
 import { RoleCreateCode } from './enum/role-create-code';
+import { RoleFindAllCode } from './enum/role-find-all-code';
 
 @Injectable()
 export class RoleService {
@@ -32,6 +33,15 @@ export class RoleService {
       code: RoleCreateCode.SUCCESS,
       message: 'create role success',
       data: savedRole,
+    };
+  }
+
+  async findAll(): Promise<HttpResult<RoleFindAllCode, Role[]>> {
+    const roles = await this.roleRepository.find();
+    return {
+      code: RoleFindAllCode.SUCCESS,
+      message: 'find all role success',
+      data: roles,
     };
   }
 }

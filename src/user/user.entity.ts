@@ -1,4 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../role/role.entity';
 
 /**
  * 用户
@@ -45,4 +53,8 @@ export class User {
    */
   @Column({ length: 4096, nullable: true })
   avatar: string;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  roles: Role[];
 }

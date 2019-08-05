@@ -8,6 +8,7 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { HttpResult } from '../dto/http-result';
 import { UserCreateCode } from './enum/user-create-code';
 import { UserLoginCode } from './enum/user-login-code';
+import { UserFindAllCode } from './enum/user-find-all-code';
 
 @Injectable()
 export class UserService {
@@ -116,6 +117,24 @@ export class UserService {
       code: UserLoginCode.SUCCESS,
       message: 'login success',
       data: retUser,
+    };
+  }
+
+  async findAll(): Promise<HttpResult<UserFindAllCode, User[]>> {
+    const users = await this.userRepository.find();
+    const retUsers = users.map(user => {
+      const retUser = new User();
+      retUser.uuid = user.uuid;
+      retUser.name = user.name;
+      retUser.email = user.email;
+      retUser.avatar = user.avatar;
+      retUser.realName = user.realName;
+      return retUser;
+    });
+    return {
+      code: UserFindAllCode.SUCCESS,
+      message: 'find all user success',
+      data: retUsers,
     };
   }
 }

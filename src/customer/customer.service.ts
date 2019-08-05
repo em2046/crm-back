@@ -5,6 +5,7 @@ import { Customer } from './customer.entity';
 import { Repository } from 'typeorm';
 import { HttpResult } from '../dto/http-result';
 import { CustomerCreateCode } from './enum/customer-create-code';
+import { CustomerFindAllCode } from './enum/customer-find-all-code';
 
 @Injectable()
 export class CustomerService {
@@ -33,6 +34,15 @@ export class CustomerService {
       code: CustomerCreateCode.SUCCESS,
       message: 'create customer success',
       data: savedCustomer,
+    };
+  }
+
+  async findAll(): Promise<HttpResult<CustomerFindAllCode, Customer[]>> {
+    const customers = await this.customerRepository.find();
+    return {
+      code: CustomerFindAllCode.SUCCESS,
+      message: 'find all customer success',
+      data: customers,
     };
   }
 }

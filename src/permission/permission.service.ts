@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { PermissionCreateDto } from './dto/permission-create.dto';
 import { PermissionCreateCode } from './enum/permission-create-code';
 import { HttpResult } from '../dto/http-result';
+import { PermissionFindAllCode } from './enum/permission-find-all-code';
 
 @Injectable()
 export class PermissionService {
@@ -35,6 +36,15 @@ export class PermissionService {
       code: PermissionCreateCode.SUCCESS,
       message: 'create permission success',
       data: savedPermission,
+    };
+  }
+
+  async findAll(): Promise<HttpResult<PermissionFindAllCode, Permission[]>> {
+    const permissions = await this.permissionRepository.find();
+    return {
+      code: PermissionFindAllCode.SUCCESS,
+      message: 'find all permission success',
+      data: permissions,
     };
   }
 }
