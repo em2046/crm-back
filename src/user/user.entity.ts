@@ -16,6 +16,12 @@ export class User {
   name: string;
 
   /**
+   * 真实姓名
+   */
+  @Column({ length: 64, nullable: true })
+  realName: string;
+
+  /**
    * 邮箱地址
    */
   @Index('user_email_index', { unique: true })

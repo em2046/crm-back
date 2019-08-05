@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { Menu } from './menu.entity';
-import { CreateMenuDto } from './dto/create-menu.dto';
+import { MenuCreateDto } from './dto/menu-create.dto';
 
 @Controller('menu')
 export class MenuController {
@@ -13,7 +13,7 @@ export class MenuController {
   }
 
   @Post()
-  create(@Body() createMenuDto: CreateMenuDto) {
+  create(@Body() createMenuDto: MenuCreateDto) {
     return this.menuService.create(createMenuDto);
   }
 }

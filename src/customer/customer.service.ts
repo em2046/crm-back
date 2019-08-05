@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCustomerDto } from './dto/create-customer.dto';
+import { CustomerCreateDto } from './dto/customer-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './customer.entity';
 import { Repository } from 'typeorm';
+import { HttpResult } from '../dto/http-result';
+import { CustomerCreateCode } from './enum/customer-create-code';
 
 @Injectable()
 export class CustomerService {
@@ -11,7 +13,26 @@ export class CustomerService {
     private readonly customerRepository: Repository<Customer>,
   ) {}
 
-  async create(createCustomerDto: CreateCustomerDto) {
-    return await this.customerRepository.save(createCustomerDto);
+  async create(
+    createCustomerDto: CustomerCreateDto,
+  ): Promise<HttpResult<CustomerCreateCode, Customer>> {
+    // 查询是否已有此客户
+
+    const foundCustomerName = await this.customerRepository.findOne({
+      name: createCustomerDto.name,
+    });
+    if (foundCustomerName) {
+      return {
+        code: CustomerCreateCode.NAME_ALREADY_EXISTS,
+        message: 'name already exists',
+      };
+    }
+
+    const savedCustomer = await this.customerRepository.save(createCustomerDto);
+    return {
+      code: CustomerCreateCode.SUCCESS,
+      message: 'create customer success',
+      data: savedCustomer,
+    };
   }
 }

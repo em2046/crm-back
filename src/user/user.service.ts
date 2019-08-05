@@ -1,22 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UserCreateDto } from './dto/user-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import Utils from '../utils/utils';
-import { LoginUserDto } from './dto/login-user.dto';
+import { UserLoginDto } from './dto/user-login.dto';
 import { HttpResult } from '../dto/http-result';
-
-export enum UserCreateCode {
-  SUCCESS = 0,
-  NAME_ALREADY_EXISTS = 1,
-  EMAIL_ALREADY_EXISTS = 2,
-}
-
-export enum UserLoginCode {
-  SUCCESS = 0,
-  NAME_OR_PASSWORD_INCORRECT = 1,
-}
+import { UserCreateCode } from './enum/user-create-code';
+import { UserLoginCode } from './enum/user-login-code';
 
 @Injectable()
 export class UserService {
@@ -30,7 +21,7 @@ export class UserService {
    * @param createUserDto 新用户信息
    */
   async create(
-    createUserDto: CreateUserDto,
+    createUserDto: UserCreateDto,
   ): Promise<HttpResult<UserCreateCode, User>> {
     // 查询是否已有此用户名
     const foundUserName = await this.userRepository.findOne({
@@ -54,23 +45,25 @@ export class UserService {
       };
     }
 
-    const user = new User();
-    user.name = createUserDto.name;
-    user.email = createUserDto.email;
-    user.avatar = createUserDto.avatar;
+    const newUser = new User();
+    newUser.name = createUserDto.name;
+    newUser.email = createUserDto.email;
+    newUser.avatar = createUserDto.avatar;
+    newUser.realName = createUserDto.realName;
 
     const salt = await Utils.randomBytesPromise();
-    user.salt = salt;
+    newUser.salt = salt;
 
-    user.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
+    newUser.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
 
     const retUser = new User();
 
-    const savedUser = await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(newUser);
 
     retUser.name = savedUser.name;
     retUser.email = savedUser.email;
     retUser.avatar = savedUser.avatar;
+    retUser.realName = savedUser.realName;
 
     return {
       code: UserCreateCode.SUCCESS,
@@ -84,7 +77,7 @@ export class UserService {
    * @param loginUserDto 登录用户信息
    */
   async login(
-    loginUserDto: LoginUserDto,
+    loginUserDto: UserLoginDto,
   ): Promise<HttpResult<UserLoginCode, User>> {
     const errorRet = {
       code: UserLoginCode.NAME_OR_PASSWORD_INCORRECT,
@@ -117,10 +110,11 @@ export class UserService {
     retUser.name = foundUser.name;
     retUser.email = foundUser.email;
     retUser.avatar = foundUser.avatar;
+    retUser.realName = foundUser.realName;
 
     return {
       code: UserLoginCode.SUCCESS,
-      message: 'Login success',
+      message: 'login success',
       data: retUser,
     };
   }

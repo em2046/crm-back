@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import Utils from '../../utils/utils';
 
-export class CreateMenuDto {
+export class MenuCreateDto {
   @IsOptional()
   @IsUUID()
   readonly parent: string;
