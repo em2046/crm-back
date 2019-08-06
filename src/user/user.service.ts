@@ -12,10 +12,30 @@ import { UserFindAllCode } from './enum/user-find-all-code';
 
 @Injectable()
 export class UserService {
+  private readonly users: User[];
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+    this.users = [
+      {
+        userId: 1,
+        username: 'john',
+        password: 'changeme',
+      },
+      {
+        userId: 2,
+        username: 'chris',
+        password: 'secret',
+      },
+      {
+        userId: 3,
+        username: 'maria',
+        password: 'guess',
+      },
+    ];
+  }
 
   /**
    * 创建用户
@@ -136,5 +156,11 @@ export class UserService {
       message: 'find all user success',
       data: retUsers,
     };
+  }
+
+  async findOne(username: string): Promise<User | undefined> {
+    return this.users.find(user => {
+      return user.username === username;
+    });
   }
 }
