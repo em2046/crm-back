@@ -6,10 +6,14 @@ import {
   Length,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class UserCreateDto {
   @IsNotEmpty()
   @Length(4, 256)
   readonly name: string;
+
+  @IsNotEmpty()
+  @Length(0, 64)
+  readonly realName: string;
 
   @IsNotEmpty()
   @Length(0, 512)

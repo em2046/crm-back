@@ -1,22 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { UserCreateDto } from './dto/user-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import Utils from '../utils/utils';
-import { LoginUserDto } from './dto/login-user.dto';
-import { HttpResult } from '../dto/http-result';
-
-export enum UserCreateCode {
-  SUCCESS = 0,
-  NAME_ALREADY_EXISTS = 1,
-  EMAIL_ALREADY_EXISTS = 2,
-}
-
-export enum UserLoginCode {
-  SUCCESS = 0,
-  NAME_OR_PASSWORD_INCORRECT = 1,
-}
+import { UserLoginDto } from './dto/user-login.dto';
 
 @Injectable()
 export class UserService {
@@ -29,99 +17,75 @@ export class UserService {
    * 创建用户
    * @param createUserDto 新用户信息
    */
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<HttpResult<UserCreateCode, User>> {
-    // 查询是否已有此用户名
+  async create(createUserDto: UserCreateDto): Promise<User> {
+    //
+    //region 查询是否已有此用户名
     const foundUserName = await this.userRepository.findOne({
       name: createUserDto.name,
     });
     if (foundUserName) {
-      return {
-        code: UserCreateCode.NAME_ALREADY_EXISTS,
-        message: 'name already exists',
-      };
+      throw new NotAcceptableException('用户名已经存在');
     }
+    //endregion
 
-    // 查询是否已有此邮箱
+    //
+    //region 查询是否已有此邮箱
     const foundUserEmail = await this.userRepository.findOne({
       email: createUserDto.email,
     });
     if (foundUserEmail) {
-      return {
-        code: UserCreateCode.EMAIL_ALREADY_EXISTS,
-        message: 'email already exists',
-      };
+      throw new NotAcceptableException('邮箱地址已经存在');
     }
+    //endregion
 
-    const user = new User();
-    user.name = createUserDto.name;
-    user.email = createUserDto.email;
-    user.avatar = createUserDto.avatar;
+    //region 密码安全存储
+    const newUser = new User();
+    newUser.name = createUserDto.name;
+    newUser.email = createUserDto.email;
+    newUser.avatar = createUserDto.avatar;
+    newUser.realName = createUserDto.realName;
 
     const salt = await Utils.randomBytesPromise();
-    user.salt = salt;
+    newUser.salt = salt;
 
-    user.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
+    newUser.password = await Utils.pbkdf2Promise(createUserDto.password, salt);
+    //endregion
 
-    const retUser = new User();
-
-    const savedUser = await this.userRepository.save(user);
-
-    retUser.name = savedUser.name;
-    retUser.email = savedUser.email;
-    retUser.avatar = savedUser.avatar;
-
-    return {
-      code: UserCreateCode.SUCCESS,
-      message: 'create user success',
-      data: retUser,
-    };
+    return await this.userRepository.save(newUser);
   }
 
   /**
    * 登录
    * @param loginUserDto 登录用户信息
    */
-  async login(
-    loginUserDto: LoginUserDto,
-  ): Promise<HttpResult<UserLoginCode, User>> {
-    const errorRet = {
-      code: UserLoginCode.NAME_OR_PASSWORD_INCORRECT,
-      message: 'name or password incorrect',
-    };
+  async login(loginUserDto: UserLoginDto): Promise<User> {
+    const errorMessage = '用户名或密码错误';
 
-    // 查找是否有对应的用户名
+    //region 查找是否有对应的用户名
     const foundUser = await this.userRepository.findOne({
       name: loginUserDto.name,
     });
 
-    // 未找到用户
     if (!foundUser) {
-      return errorRet;
+      throw new NotAcceptableException(errorMessage);
     }
+    //endregion
 
-    // 验证密码是否匹配
+    //region 验证密码是否匹配
     const passwordHash = await Utils.pbkdf2Promise(
       loginUserDto.password,
       foundUser.salt,
     );
 
-    // 密码不匹配
     if (passwordHash !== foundUser.password) {
-      return errorRet;
+      throw new NotAcceptableException(errorMessage);
     }
+    //endregion
 
-    const retUser = new User();
-    retUser.uuid = foundUser.uuid;
-    retUser.name = foundUser.name;
-    retUser.email = foundUser.email;
-    retUser.avatar = foundUser.avatar;
+    return foundUser;
+  }
 
-    return {
-      code: UserLoginCode.SUCCESS,
-      message: 'Login success',
-      data: retUser,
-    };
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 }

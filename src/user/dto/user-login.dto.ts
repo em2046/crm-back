@@ -1,6 +1,6 @@
 import { IsAscii, IsNotEmpty, Length } from 'class-validator';
 
-export class LoginUserDto {
+export class UserLoginDto {
   @IsNotEmpty()
   @Length(4, 256)
   readonly name: string;

@@ -1,4 +1,13 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../role/role.entity';
+import { Exclude } from 'class-transformer';
 
 /**
  * 用户
@@ -16,6 +25,12 @@ export class User {
   name: string;
 
   /**
+   * 真实姓名
+   */
+  @Column({ length: 64, nullable: true })
+  realName: string;
+
+  /**
    * 邮箱地址
    */
   @Index('user_email_index', { unique: true })
@@ -25,12 +40,14 @@ export class User {
   /**
    * 密码
    */
+  @Exclude()
   @Column({ length: 256, nullable: false })
   password: string;
 
   /**
    * 盐
    */
+  @Exclude()
   @Column({ length: 256, nullable: false })
   salt: string;
 
@@ -39,4 +56,8 @@ export class User {
    */
   @Column({ length: 4096, nullable: true })
   avatar: string;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  roles: Role[];
 }

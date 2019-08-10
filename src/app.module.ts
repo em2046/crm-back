@@ -6,6 +6,9 @@ import { join } from 'path';
 import { MenuModule } from './menu/menu.module';
 import { UserModule } from './user/user.module';
 import { CustomerModule } from './customer/customer.module';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { CustomerModule } from './customer/customer.module';
     MenuModule,
     UserModule,
     CustomerModule,
+    RoleModule,
+    PermissionModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

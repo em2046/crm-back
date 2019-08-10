@@ -21,7 +21,7 @@ import {
 } from '../customer.entity';
 import Utils from '../../utils/utils';
 
-export class CreateCustomerDto {
+export class CustomerCreateDto {
   @IsNotEmpty()
   @Length(4, 256)
   @Matches(Utils.identifierRule)
