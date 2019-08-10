@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../role/role.entity';
+import { Exclude } from 'class-transformer';
 
 /**
  * 用户
@@ -39,12 +40,14 @@ export class User {
   /**
    * 密码
    */
+  @Exclude()
   @Column({ length: 256, nullable: false })
   password: string;
 
   /**
    * 盐
    */
+  @Exclude()
   @Column({ length: 256, nullable: false })
   salt: string;
 

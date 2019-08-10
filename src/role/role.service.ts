@@ -1,11 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { RoleCreateDto } from './dto/role-create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './role.entity';
 import { Repository } from 'typeorm';
-import { HttpResult } from '../dto/http-result';
-import { RoleCreateCode } from './enum/role-create-code';
-import { RoleFindAllCode } from './enum/role-find-all-code';
 
 @Injectable()
 export class RoleService {
@@ -14,34 +11,20 @@ export class RoleService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async create(
-    createRoleDto: RoleCreateDto,
-  ): Promise<HttpResult<RoleCreateCode, Role>> {
-    // 查询是否已有此角色
+  async create(createRoleDto: RoleCreateDto): Promise<Role> {
+    //region 查询是否已有此角色
     const foundRoleName = await this.roleRepository.findOne({
       name: createRoleDto.name,
     });
     if (foundRoleName) {
-      return {
-        code: RoleCreateCode.NAME_ALREADY_EXISTS,
-        message: 'name already exists',
-      };
+      throw new NotAcceptableException('角色名称已经存在');
     }
+    //endregion
 
-    const savedRole = await this.roleRepository.save(createRoleDto);
-    return {
-      code: RoleCreateCode.SUCCESS,
-      message: 'create role success',
-      data: savedRole,
-    };
+    return await this.roleRepository.save(createRoleDto);
   }
 
-  async findAll(): Promise<HttpResult<RoleFindAllCode, Role[]>> {
-    const roles = await this.roleRepository.find();
-    return {
-      code: RoleFindAllCode.SUCCESS,
-      message: 'find all role success',
-      data: roles,
-    };
+  async findAll(): Promise<Role[]> {
+    return await this.roleRepository.find();
   }
 }

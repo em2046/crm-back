@@ -1,11 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './menu.entity';
 import { Repository } from 'typeorm';
 import { MenuCreateDto } from './dto/menu-create.dto';
-import { HttpResult } from '../dto/http-result';
-import { MenuCreateCode } from './enum/menu-create-code';
-import { MenuFindAllCode } from './enum/menu-find-all-code';
 
 @Injectable()
 export class MenuService {
@@ -14,33 +11,20 @@ export class MenuService {
     private readonly menuRepository: Repository<Menu>,
   ) {}
 
-  async findAll(): Promise<HttpResult<MenuFindAllCode, Menu[]>> {
-    const menus = await this.menuRepository.find();
-    return {
-      code: MenuFindAllCode.SUCCESS,
-      message: 'find all menu success',
-      data: menus,
-    };
+  async findAll(): Promise<Menu[]> {
+    return await this.menuRepository.find();
   }
 
-  async create(
-    createMenuDto: MenuCreateDto,
-  ): Promise<HttpResult<MenuCreateCode, Menu>> {
+  async create(createMenuDto: MenuCreateDto): Promise<Menu> {
+    //region 检查重复名称
     const foundMenuName = await this.menuRepository.findOne({
       name: createMenuDto.name,
     });
     if (foundMenuName) {
-      return {
-        code: MenuCreateCode.NAME_ALREADY_EXISTS,
-        message: 'name already exists',
-      };
+      throw new NotAcceptableException('名称已经存在');
     }
+    //endregion
 
-    const savedMenu = await this.menuRepository.save(createMenuDto);
-    return {
-      code: MenuCreateCode.SUCCESS,
-      message: 'create menu success',
-      data: savedMenu,
-    };
+    return await this.menuRepository.save(createMenuDto);
   }
 }
