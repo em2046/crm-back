@@ -11,7 +11,7 @@ export class UserCreateDto {
   @Length(4, 256)
   readonly name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @Length(0, 64)
   readonly realName: string;
 

@@ -5,10 +5,12 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import Utils from '../utils/utils';
 import { UserLoginDto } from './dto/user-login.dto';
+import { RoleService } from '../role/role.service';
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly roleService: RoleService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -86,6 +88,13 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ relations: ['roles'] });
+  }
+
+  async update(uuid, userUpdateDto): Promise<User> {
+    const foundUser = await this.userRepository.findOne({ uuid });
+    foundUser.roles = await this.roleService.findSome(userUpdateDto.roles);
+
+    return await this.userRepository.save(foundUser);
   }
 }
