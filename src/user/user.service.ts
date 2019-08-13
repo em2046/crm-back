@@ -97,4 +97,11 @@ export class UserService {
 
     return await this.userRepository.save(foundUser);
   }
+
+  async findOne(uuid: any): Promise<User> {
+    return await this.userRepository.findOne(
+      { uuid },
+      { relations: ['roles'] },
+    );
+  }
 }
