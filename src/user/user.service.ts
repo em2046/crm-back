@@ -20,7 +20,6 @@ export class UserService {
    * @param createUserDto 新用户信息
    */
   async create(createUserDto: UserCreateDto): Promise<User> {
-    //
     //region 查询是否已有此用户名
     const foundUserName = await this.userRepository.findOne({
       name: createUserDto.name,
@@ -30,7 +29,6 @@ export class UserService {
     }
     //endregion
 
-    //
     //region 查询是否已有此邮箱
     const foundUserEmail = await this.userRepository.findOne({
       email: createUserDto.email,
@@ -103,5 +101,9 @@ export class UserService {
       { uuid },
       { relations: ['roles'] },
     );
+  }
+
+  async find(options) {
+    return await this.userRepository.find(options);
   }
 }
