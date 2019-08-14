@@ -24,6 +24,12 @@ export class UserController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':uuid')
+  findOne(@Param('uuid') uuid) {
+    return this.userService.findOne(uuid);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   create(@Body() createUserDto: UserCreateDto) {
     return this.userService.create(createUserDto);

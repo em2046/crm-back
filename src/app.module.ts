@@ -9,6 +9,7 @@ import { CustomerModule } from './customer/customer.module';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { AuthModule } from './auth/auth.module';
+import { InstallModule } from './install/install.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     RoleModule,
     PermissionModule,
     AuthModule,
+    InstallModule,
   ],
   controllers: [AppController],
   providers: [AppService],
