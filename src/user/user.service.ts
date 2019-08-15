@@ -91,6 +91,13 @@ export class UserService {
 
   async update(uuid, userUpdateDto): Promise<User> {
     const foundUser = await this.userRepository.findOne({ uuid });
+    if (!foundUser) {
+      throw new NotAcceptableException('未找到用户');
+    }
+    foundUser.name = userUpdateDto.name;
+    foundUser.email = userUpdateDto.email;
+    foundUser.realName = userUpdateDto.realName;
+
     foundUser.roles = await this.roleService.findSome(userUpdateDto.roles);
 
     return await this.userRepository.save(foundUser);
