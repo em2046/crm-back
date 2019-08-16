@@ -103,7 +103,7 @@ export class UserService {
     return await this.userRepository.save(foundUser);
   }
 
-  async findOne(uuid: any): Promise<User> {
+  async findOne(uuid: string): Promise<User> {
     return await this.userRepository.findOne(
       { uuid },
       { relations: ['roles'] },
@@ -112,5 +112,9 @@ export class UserService {
 
   async find(options) {
     return await this.userRepository.find(options);
+  }
+
+  async remove(uuid: string) {
+    return await this.userRepository.delete(uuid);
   }
 }

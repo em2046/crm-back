@@ -4,9 +4,13 @@ import { PermissionService } from './permission.service';
 import { PermissionCreateDto } from './dto/permission-create.dto';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission } from './permission.entity';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Permission])],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    TypeOrmModule.forFeature([Permission]),
+  ],
   controllers: [PermissionController],
   providers: [PermissionService],
 })
