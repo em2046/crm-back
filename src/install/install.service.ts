@@ -72,6 +72,7 @@ export class InstallService {
     userAdmin.password = Origin.password;
     userAdmin.salt = Origin.salt;
     userAdmin.roles = [roleAdmin];
+    userAdmin.avatar = '129464';
 
     await this.userRepository.save(userAdmin);
   }
@@ -120,6 +121,7 @@ export class InstallService {
       password: 'test',
       email: 'test@em2046.com',
       realName: '测试',
+      avatar: '128027',
     } as UserCreateDto;
     await this.userService.create(userTest);
 
@@ -128,6 +130,7 @@ export class InstallService {
       password: 'staff',
       email: 'staff@em2046.com',
       realName: '客服',
+      avatar: '128029',
     } as UserCreateDto;
     const createdUserStaff = await this.userService.create(userStaff);
     createdUserStaff.roles = [roleStaff];
@@ -138,6 +141,7 @@ export class InstallService {
       password: 'supervisor',
       email: 'supervisor@em2046.com',
       realName: '客服主管',
+      avatar: '128039',
     } as UserCreateDto;
     const createdUserSupervisor = await this.userService.create(userSupervisor);
     createdUserSupervisor.roles = [roleSupervisor];
@@ -148,6 +152,7 @@ export class InstallService {
       password: 'operator',
       email: 'operator@em2046.com',
       realName: '运营',
+      avatar: '128032',
     } as UserCreateDto;
     const createdUserOperator = await this.userService.create(userOperator);
     createdUserOperator.roles = [roleOperator];

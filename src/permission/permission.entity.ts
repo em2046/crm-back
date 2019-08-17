@@ -1,10 +1,5 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
-import {
-  IsDefined,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsDefined, IsOptional, IsString, Length } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
