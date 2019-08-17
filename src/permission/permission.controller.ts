@@ -1,21 +1,35 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { PermissionService } from './permission.service';
-import { PermissionCreateDto } from './dto/permission-create.dto';
+import { Crud } from '@nestjsx/crud';
+import { Permission } from './permission.entity';
 import { AuthGuard } from '@nestjs/passport';
 
+const routesOption = {
+  decorators: [UseGuards(AuthGuard())],
+};
+
+@Crud({
+  model: {
+    type: Permission,
+  },
+  params: {
+    id: {
+      field: 'uuid',
+      type: 'uuid',
+      primary: true,
+    },
+  },
+  routes: {
+    getManyBase: routesOption,
+    getOneBase: routesOption,
+    createOneBase: routesOption,
+    createManyBase: routesOption,
+    updateOneBase: routesOption,
+    replaceOneBase: routesOption,
+    deleteOneBase: routesOption,
+  },
+})
 @Controller('permission')
 export class PermissionController {
-  constructor(private readonly permissionService: PermissionService) {}
-
-  @UseGuards(AuthGuard())
-  @Get()
-  findAll() {
-    return this.permissionService.findAll();
-  }
-
-  @UseGuards(AuthGuard())
-  @Post()
-  create(@Body() createPermissionDto: PermissionCreateDto) {
-    return this.permissionService.create(createPermissionDto);
-  }
+  constructor(public service: PermissionService) {}
 }

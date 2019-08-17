@@ -113,6 +113,32 @@
   dependencies:
     uuid "3.3.2"
 
+"@nestjsx/crud-request@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.npm.taobao.org/@nestjsx/crud-request/download/@nestjsx/crud-request-4.2.0.tgz#82d81d406157e83e7fa9816ce1f24d03824c24a6"
+  integrity sha1-gtgdQGFX6D5/qYFs4fJNA4JMJKY=
+  dependencies:
+    "@nestjsx/util" "^4.2.0"
+
+"@nestjsx/crud-typeorm@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.npm.taobao.org/@nestjsx/crud-typeorm/download/@nestjsx/crud-typeorm-4.2.0.tgz#1b0b176b5ef7b56c255bc2e0d3c911ca23673cfa"
+  integrity sha1-GwsXa173tWwlW8Lg08kRyiNnPPo=
+
+"@nestjsx/crud@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.npm.taobao.org/@nestjsx/crud/download/@nestjsx/crud-4.2.0.tgz#8cb94716f6f7eaa32ad72645056b386468ac71c7"
+  integrity sha1-jLlHFvb36qMq1yZFBWs4ZGisccc=
+  dependencies:
+    "@nestjsx/crud-request" "^4.2.0"
+    "@nestjsx/util" "^4.2.0"
+    deepmerge "^3.2.0"
+
+"@nestjsx/util@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.npm.taobao.org/@nestjsx/util/download/@nestjsx/util-4.2.0.tgz#28a9eab85e01390dcc0d8fd32074256b08ff6c1d"
+  integrity sha1-KKnquF4BOQ3MDY/TIHQlawj/bB0=
+
 "@nuxtjs/opencollective@0.2.2":
   version "0.2.2"
   resolved "https://registry.npm.taobao.org/@nuxtjs/opencollective/download/@nuxtjs/opencollective-0.2.2.tgz#26a761ebf588cc92a422d7cee996a66bd6e2761e"
@@ -218,6 +244,11 @@
   integrity sha1-I4ASNuK4UgTtdxqOfED+u6faK9o=
   dependencies:
     "@types/superagent" "*"
+
+"@types/validator@10.11.2":
+  version "10.11.2"
+  resolved "https://registry.npm.taobao.org/@types/validator/download/@types/validator-10.11.2.tgz#48b60ca2cca927081f37a1ad1de3e25d04abc9f0"
+  integrity sha1-SLYMosypJwgfN6GtHePiXQSryfA=
 
 abab@^2.0.0:
   version "2.0.0"
@@ -914,13 +945,14 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-class-validator@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.npm.taobao.org/class-validator/download/class-validator-0.9.1.tgz#d60e58c5d14abca0a41bce38cf792ad4c46d1531"
-  integrity sha1-1g5YxdFKvKCkG844z3kq1MRtFTE=
+class-validator@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.npm.taobao.org/class-validator/download/class-validator-0.10.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fclass-validator%2Fdownload%2Fclass-validator-0.10.0.tgz#5e5f8108fa200d5ce1906cd5537af102c072dbcd"
+  integrity sha1-Xl+BCPogDVzhkGzVU3rxAsBy280=
   dependencies:
+    "@types/validator" "10.11.2"
     google-libphonenumber "^3.1.6"
-    validator "10.4.0"
+    validator "11.1.0"
 
 cli-boxes@^1.0.0:
   version "1.0.0"
@@ -1249,6 +1281,11 @@ deepmerge@^2.0.1:
   version "2.2.1"
   resolved "https://registry.npm.taobao.org/deepmerge/download/deepmerge-2.2.1.tgz#5d3ff22a01c00f645405a2fbc17d0778a1801170"
   integrity sha1-XT/yKgHAD2RUBaL7wX0HeKGAEXA=
+
+deepmerge@^3.2.0:
+  version "3.3.0"
+  resolved "https://registry.npm.taobao.org/deepmerge/download/deepmerge-3.3.0.tgz#d3c47fd6f3a93d517b14426b0628a17b0125f5f7"
+  integrity sha1-08R/1vOpPVF7FEJrBiihewEl9fc=
 
 default-require-extensions@^1.0.0:
   version "1.0.0"
@@ -5296,10 +5333,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@10.4.0:
-  version "10.4.0"
-  resolved "https://registry.npm.taobao.org/validator/download/validator-10.4.0.tgz#ee99a44afb3bb5ed350a159f056ca72a204cfc3c"
-  integrity sha1-7pmkSvs7te01ChWfBWynKiBM/Dw=
+validator@11.1.0:
+  version "11.1.0"
+  resolved "https://registry.npm.taobao.org/validator/download/validator-11.1.0.tgz#ac18cac42e0aa5902b603d7a5d9b7827e2346ac4"
+  integrity sha1-rBjKxC4KpZArYD16XZt4J+I0asQ=
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
