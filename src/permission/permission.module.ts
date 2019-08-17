@@ -12,5 +12,6 @@ import { PassportModule } from '@nestjs/passport';
   ],
   controllers: [PermissionController],
   providers: [PermissionService],
+  exports: [PermissionService],
 })
 export class PermissionModule {}

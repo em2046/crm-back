@@ -13,8 +13,8 @@ export class AuthService {
     const user = await this.userService.login({ name: username, password });
     if (user) {
       return {
-        username: user.name,
-        userId: user.uuid,
+        name: user.name,
+        uuid: user.uuid,
       };
     }
     return null;

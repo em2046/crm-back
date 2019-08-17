@@ -38,4 +38,11 @@ export default class Utils {
       });
     });
   }
+
+  /**
+   * 同步生成随机密钥
+   */
+  static randomSecretKey() {
+    return crypto.randomBytes(128).toString('hex');
+  }
 }
