@@ -11,6 +11,10 @@ export class CustomerService {
     private readonly customerRepository: Repository<Customer>,
   ) {}
 
+  /**
+   * 新建客户
+   * @param createCustomerDto 客户信息
+   */
   async create(createCustomerDto: CustomerCreateDto): Promise<Customer> {
     //region 查询是否已有此客户
     const foundCustomerName = await this.customerRepository.findOne({
@@ -24,6 +28,9 @@ export class CustomerService {
     return await this.customerRepository.save(createCustomerDto);
   }
 
+  /**
+   * 查找全部客户
+   */
   async findAll(): Promise<Customer[]> {
     return await this.customerRepository.find();
   }

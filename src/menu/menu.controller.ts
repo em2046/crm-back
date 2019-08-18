@@ -7,12 +7,19 @@ import { AuthGuard } from '@nestjs/passport';
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
+  /**
+   * 查找全部菜单
+   */
   @UseGuards(AuthGuard())
   @Get()
   findAll() {
     return this.menuService.findAll();
   }
 
+  /**
+   * 新建菜单
+   * @param createMenuDto 菜单信息
+   */
   @UseGuards(AuthGuard())
   @Post()
   create(@Body() createMenuDto: MenuCreateDto) {

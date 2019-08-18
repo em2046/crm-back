@@ -1,4 +1,7 @@
 export default class Origin {
+  /**
+   * 密码
+   */
   static password =
     '5da09d44da8416b267c58e5996d32d2b' +
     '7b571e87c08ad8f53f1d1918928bfd49' +
@@ -9,6 +12,9 @@ export default class Origin {
     'b209379086c3c0352619ca59c8aee72a' +
     '9acd7d98454556d13c932de162d51fb3';
 
+  /**
+   * 盐
+   */
   static salt =
     '39e472bc3e49416c187a256f0bda9125' +
     '14bf77fc5fce806d9a648cdb6c0862f4' +

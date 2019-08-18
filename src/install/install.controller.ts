@@ -10,6 +10,10 @@ interface ValidateInfo {
 export class InstallController {
   constructor(private readonly installService: InstallService) {}
 
+  /**
+   * 安装全部
+   * @param validateInfo 身份验证信息
+   */
   @Post()
   installAll(@Body() validateInfo: ValidateInfo) {
     if (!(validateInfo.username && validateInfo.password)) {

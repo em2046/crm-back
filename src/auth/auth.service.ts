@@ -9,6 +9,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * 验证用户
+   * @param username 用户名
+   * @param password 密码
+   */
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.login({ name: username, password });
     if (user) {
@@ -20,8 +25,12 @@ export class AuthService {
     return null;
   }
 
+  /**
+   * 登录
+   * @param user 用户
+   */
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { uuid: user.uuid, name: user.name };
     return {
       access_token: this.jwtService.sign(payload),
     };

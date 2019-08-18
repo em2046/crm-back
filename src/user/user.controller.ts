@@ -20,6 +20,9 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * 查找全部用户
+   */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
@@ -27,6 +30,10 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  /**
+   * 查找用户
+   * @param uuid 编号
+   */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':uuid')
@@ -34,6 +41,10 @@ export class UserController {
     return this.userService.findOne(uuid);
   }
 
+  /**
+   * 创建用户
+   * @param createUserDto 用户信息
+   */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
@@ -41,6 +52,10 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  /**
+   * 移除用户
+   * @param uuid 编号
+   */
   @UseGuards(AuthGuard())
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
@@ -51,6 +66,10 @@ export class UserController {
     };
   }
 
+  /**
+   * 登录
+   * @param loginUserDto 身份信息
+   */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('login')
@@ -58,6 +77,11 @@ export class UserController {
     return this.userService.login(loginUserDto);
   }
 
+  /**
+   * 更新用户
+   * @param uuid 编号
+   * @param userUpdateDto 更新数据
+   */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':uuid')
