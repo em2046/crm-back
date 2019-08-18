@@ -5,6 +5,7 @@ import {
   IsOptional,
   Length,
 } from 'class-validator';
+import { Role } from '../../role/role.entity';
 
 export class UserCreateDto {
   @IsNotEmpty()
@@ -28,4 +29,7 @@ export class UserCreateDto {
   @IsOptional()
   @Length(0, 4096)
   readonly avatar: string;
+
+  @IsOptional()
+  readonly roles: Role[];
 }

@@ -57,6 +57,9 @@ export class User {
   @Column({ length: 4096, nullable: true })
   avatar: string;
 
+  /**
+   * 角色
+   */
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];

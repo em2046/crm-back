@@ -1,31 +1,16 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { RoleCreateDto } from './dto/role-create.dto';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './role.entity';
 import { Repository } from 'typeorm';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 @Injectable()
-export class RoleService {
+export class RoleService extends TypeOrmCrudService<Role> {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-  ) {}
-
-  async create(createRoleDto: RoleCreateDto): Promise<Role> {
-    //region 查询是否已有此角色
-    const foundRoleName = await this.roleRepository.findOne({
-      name: createRoleDto.name,
-    });
-    if (foundRoleName) {
-      throw new NotAcceptableException('角色名称已经存在');
-    }
-    //endregion
-
-    return await this.roleRepository.save(createRoleDto);
-  }
-
-  async findAll(): Promise<Role[]> {
-    return await this.roleRepository.find({ relations: ['permissions'] });
+  ) {
+    super(roleRepository);
   }
 
   async findSome(uuidList: string[]): Promise<Role[]> {

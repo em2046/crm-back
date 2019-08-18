@@ -1,4 +1,5 @@
 import { IsEmail, IsOptional, Length } from 'class-validator';
+import { Role } from '../../role/role.entity';
 
 export class UserUpdateDto {
   @IsOptional()
@@ -15,5 +16,5 @@ export class UserUpdateDto {
   readonly email: string;
 
   @IsOptional()
-  readonly roles: string[];
+  readonly roles: Role[];
 }

@@ -44,6 +44,7 @@ export class UserService {
     newUser.email = createUserDto.email;
     newUser.avatar = createUserDto.avatar;
     newUser.realName = createUserDto.realName;
+    newUser.roles = createUserDto.roles;
 
     const salt = await Utils.randomBytesPromise();
     newUser.salt = salt;
@@ -85,25 +86,48 @@ export class UserService {
     return foundUser;
   }
 
+  /**
+   * 查找全部用户
+   */
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({ relations: ['roles'] });
   }
 
+  /**
+   * 更新用户
+   * @param uuid 编号
+   * @param userUpdateDto 更新数据
+   */
   async update(uuid, userUpdateDto): Promise<User> {
     const foundUser = await this.userRepository.findOne({ uuid });
+    if (!foundUser) {
+      throw new NotAcceptableException('未找到用户');
+    }
+    foundUser.name = userUpdateDto.name;
+    foundUser.email = userUpdateDto.email;
+    foundUser.realName = userUpdateDto.realName;
+
     foundUser.roles = await this.roleService.findSome(userUpdateDto.roles);
 
     return await this.userRepository.save(foundUser);
   }
 
-  async findOne(uuid: any): Promise<User> {
+  /**
+   * 查找用户
+   * @param uuid 编号
+   */
+  async findOne(uuid: string): Promise<User> {
     return await this.userRepository.findOne(
       { uuid },
       { relations: ['roles'] },
     );
   }
 
-  async find(options) {
-    return await this.userRepository.find(options);
+  /**
+   * 移除用户
+   * @param uuid
+   */
+  async remove(uuid: string) {
+    return await this.userRepository.delete(uuid);
   }
 }

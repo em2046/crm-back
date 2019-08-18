@@ -11,10 +11,17 @@ export class MenuService {
     private readonly menuRepository: Repository<Menu>,
   ) {}
 
+  /**
+   * 查找全部菜单
+   */
   async findAll(): Promise<Menu[]> {
     return await this.menuRepository.find();
   }
 
+  /**
+   * 新建菜单
+   * @param createMenuDto 菜单信息
+   */
   async create(createMenuDto: MenuCreateDto): Promise<Menu> {
     //region 检查重复名称
     const foundMenuName = await this.menuRepository.findOne({
