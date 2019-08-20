@@ -60,10 +60,6 @@ export class UserController {
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
     this.userService.remove(uuid);
-    return {
-      statusCode: 0,
-      message: '删除成功',
-    };
   }
 
   /**
