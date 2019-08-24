@@ -16,6 +16,15 @@ export class UserService {
   ) {}
 
   /**
+   * 用户是否存在
+   * @param uuid 编号
+   */
+  async exist(uuid: string): Promise<boolean> {
+    const user = await this.findOne(uuid);
+    return !!user;
+  }
+
+  /**
    * 创建用户
    * @param createUserDto 新用户信息
    */
@@ -99,7 +108,7 @@ export class UserService {
    * @param userUpdateDto 更新数据
    */
   async update(uuid, userUpdateDto): Promise<User> {
-    const foundUser = await this.userRepository.findOne({ uuid });
+    const foundUser = await this.userRepository.findOne(uuid);
     if (!foundUser) {
       throw new NotAcceptableException('未找到用户');
     }
@@ -117,10 +126,7 @@ export class UserService {
    * @param uuid 编号
    */
   async findOne(uuid: string): Promise<User> {
-    return await this.userRepository.findOne(
-      { uuid },
-      { relations: ['roles'] },
-    );
+    return await this.userRepository.findOne(uuid, { relations: ['roles'] });
   }
 
   /**
