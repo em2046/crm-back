@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ComplaintService } from './complaint-task/complaint.service';
-import { ComplaintController } from './complaint-task/complaint.controller';
+import { ComplaintService } from './complaint/complaint.service';
+import { ComplaintController } from './complaint/complaint.controller';
 import { SaleController } from './sale/sale.controller';
 import { SaleService } from './sale/sale.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Complaint } from './complaint-task/complaint.entity';
+import { Complaint } from './complaint/complaint.entity';
 import { Sale } from './sale/sale.entity';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/user.module';
