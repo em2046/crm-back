@@ -165,7 +165,7 @@ export class Customer {
   /**
    * 注册时间
    */
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   registrationTime: string;
 
   /**
@@ -182,7 +182,7 @@ export class Customer {
   /**
    * 生日
    */
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   birthday: string;
 
   /**

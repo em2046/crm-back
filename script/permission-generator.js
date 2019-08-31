@@ -62,7 +62,10 @@ async function main() {
   format.parser = 'typescript';
   let permissionJSON = JSON.stringify(PERMISSION);
 
-  let content = `export const PERMISSION = ${permissionJSON}
+  let content = `/**
+ * 此文件由脚本自动生成，请勿直接修改
+ */
+export const PERMISSION = ${permissionJSON}
 `;
 
   await fsPromises.writeFile(

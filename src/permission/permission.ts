@@ -1,3 +1,6 @@
+/**
+ * 此文件由脚本自动生成，请勿直接修改
+ */
 export const PERMISSION = {
   USER: {
     CREATE: { name: 'user_create', title: '用户创建' },
