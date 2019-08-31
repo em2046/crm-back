@@ -8,6 +8,7 @@ import { Role } from '../role/role.entity';
 import { UserService } from '../user/user.service';
 import { UserCreateDto } from '../user/dto/user-create.dto';
 import { Permission } from '../permission/permission.entity';
+import { PERMISSION } from '../permission/permission';
 
 @Injectable()
 export class InstallService {
@@ -81,25 +82,23 @@ export class InstallService {
    * 安装角色
    */
   private async installRole() {
-    const permissionsManagement = await this.permissionRepository.findOne({
-      name: 'management',
-    });
-    const permissionsLogin = await this.permissionRepository.findOne({
-      name: 'login',
-    });
     const roles = [
       {
         name: 'admin',
         title: '管理员',
-        permissions: [permissionsLogin, permissionsManagement],
+        permissions: [PERMISSION.USER.CREATE, PERMISSION.USER.UPDATE],
       },
-      { name: 'operator', title: '运营', permissions: [permissionsLogin] },
+      {
+        name: 'operator',
+        title: '运营',
+        permissions: [PERMISSION.TASK.CREATE],
+      },
       {
         name: 'supervisor',
         title: '客服主管',
-        permissions: [permissionsLogin],
+        permissions: [PERMISSION.TASK.ASSIGN],
       },
-      { name: 'staff', title: '客服', permissions: [permissionsLogin] },
+      { name: 'staff', title: '客服', permissions: [PERMISSION.TASK.EXECUTE] },
     ];
     await this.roleRepository.save(roles);
   }
@@ -163,17 +162,11 @@ export class InstallService {
    * 安装权限
    */
   private async installPermission() {
-    const permissions = [
-      { name: 'management', title: '管理' },
-      { name: 'taskQuery', title: '任务查询' },
-      { name: 'taskCreate', title: '任务创建' },
-      { name: 'taskAssign', title: '任务指派' },
-      { name: 'taskExecute', title: '任务执行' },
-      { name: 'knowledgeQuery', title: '知识查询' },
-      { name: 'knowledgeManage', title: '知识管理' },
-      { name: 'customerQuery', title: '客户查询' },
-      { name: 'customerManage', title: '客户管理' },
-    ];
+    const permissions = [];
+    Object.values(PERMISSION).forEach(p => {
+      permissions.push(...Object.values(p));
+    });
+
     await this.permissionRepository.save(permissions);
   }
 }
