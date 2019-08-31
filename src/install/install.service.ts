@@ -165,7 +165,14 @@ export class InstallService {
   private async installPermission() {
     const permissions = [
       { name: 'management', title: '管理' },
-      { name: 'login', title: '登录' },
+      { name: 'taskQuery', title: '任务查询' },
+      { name: 'taskCreate', title: '任务创建' },
+      { name: 'taskAssign', title: '任务指派' },
+      { name: 'taskExecute', title: '任务执行' },
+      { name: 'knowledgeQuery', title: '知识查询' },
+      { name: 'knowledgeManage', title: '知识管理' },
+      { name: 'customerQuery', title: '客户查询' },
+      { name: 'customerManage', title: '客户管理' },
     ];
     await this.permissionRepository.save(permissions);
   }

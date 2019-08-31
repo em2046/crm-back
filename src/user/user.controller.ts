@@ -43,13 +43,13 @@ export class UserController {
 
   /**
    * 创建用户
-   * @param createUserDto 用户信息
+   * @param userCreateDto 用户信息
    */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  create(@Body() createUserDto: UserCreateDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() userCreateDto: UserCreateDto) {
+    return this.userService.create(userCreateDto);
   }
 
   /**
@@ -64,13 +64,13 @@ export class UserController {
 
   /**
    * 登录
-   * @param loginUserDto 身份信息
+   * @param userLoginDto 身份信息
    */
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('login')
-  login(@Body() loginUserDto: UserLoginDto) {
-    return this.userService.login(loginUserDto);
+  login(@Body() userLoginDto: UserLoginDto) {
+    return this.userService.login(userLoginDto);
   }
 
   /**

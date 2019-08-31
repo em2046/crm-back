@@ -10,6 +10,8 @@ import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { AuthModule } from './auth/auth.module';
 import { InstallModule } from './install/install.module';
+import { TaskModule } from './task/task.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { InstallModule } from './install/install.module';
     PermissionModule,
     AuthModule,
     InstallModule,
+    TaskModule,
+    KnowledgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
