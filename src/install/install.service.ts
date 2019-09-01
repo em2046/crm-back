@@ -208,7 +208,6 @@ export class InstallService {
       ]);
 
       customer.level = InstallService.randomArrayItem([
-        CustomerLevel.LEVEL_0,
         CustomerLevel.LEVEL_1,
         CustomerLevel.LEVEL_2,
         CustomerLevel.LEVEL_3,

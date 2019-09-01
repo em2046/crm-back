@@ -19,7 +19,6 @@ export enum CustomerType {
  * 用户等级
  */
 export enum CustomerLevel {
-  LEVEL_0 = 0,
   LEVEL_1 = 1,
   LEVEL_2 = 2,
   LEVEL_3 = 3,
@@ -157,7 +156,7 @@ export class Customer {
   @Column({
     type: 'enum',
     enum: CustomerLevel,
-    default: CustomerLevel.LEVEL_0,
+    default: CustomerLevel.LEVEL_1,
     nullable: true,
   })
   level: CustomerLevel;
