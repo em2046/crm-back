@@ -1,9 +1,4 @@
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Post } from '@nestjs/common';
 import { InstallService } from './install.service';
 
 interface ValidateInfo {

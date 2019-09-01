@@ -24,6 +24,7 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
       database: 'crm',
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
+      charset: 'utf8mb4',
     }),
     MenuModule,
     UserModule,

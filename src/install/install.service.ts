@@ -10,7 +10,14 @@ import { UserCreateDto } from '../user/dto/user-create.dto';
 import { Permission } from '../permission/permission.entity';
 import { PERMISSION } from '../permission/permission';
 import { SURNAME } from './surname';
-import { Customer, CustomerEducation, CustomerGender, CustomerLevel, CustomerMaritalStatus, CustomerType } from '../customer/customer.entity';
+import {
+  Customer,
+  CustomerEducation,
+  CustomerGender,
+  CustomerLevel,
+  CustomerMaritalStatus,
+  CustomerType,
+} from '../customer/customer.entity';
 import { CITIES } from './cities';
 
 @Injectable()
@@ -182,8 +189,16 @@ export class InstallService {
   private async installCustomer() {
     for (let i = 0; i < 100; i++) {
       const customer = new Customer();
-      customer.realName = InstallService.randomName();
-      customer.nickName = InstallService.randomName();
+
+      const gender = InstallService.randomArrayItem([
+        CustomerGender.UN_KNOW,
+        CustomerGender.MALE,
+        CustomerGender.FEMALE,
+        CustomerGender.OTHER,
+      ]);
+
+      customer.realName = InstallService.randomRealName(gender);
+      customer.nickName = InstallService.randomNickName();
       const id = i.toString().padStart(7, '0');
       customer.name = 'lv' + id;
 
@@ -207,26 +222,18 @@ export class InstallService {
       pass.setFullYear(now.getFullYear() - 100);
 
       customer.registrationTime = new Date(
-        InstallService.randomIntervalInt(pass.getTime(), now.getTime()),
+        Utils.randomInt(pass.getTime(), now.getTime()),
       ).toISOString();
 
-      customer.gender = InstallService.randomArrayItem([
-        CustomerGender.UN_KNOW,
-        CustomerGender.MALE,
-        CustomerGender.FEMALE,
-        CustomerGender.OTHER,
-      ]);
+      customer.gender = gender;
 
       customer.birthday = new Date(
-        InstallService.randomIntervalInt(pass.getTime(), now.getTime()),
+        Utils.randomInt(pass.getTime(), now.getTime()),
       ).toISOString();
 
       customer.city = InstallService.randomArrayItem(CITIES).code;
 
-      customer.annualIncome = InstallService.randomIntervalInt(
-        1_000,
-        1_000_000,
-      );
+      customer.annualIncome = Utils.randomInt(1_000, 1_000_000);
 
       customer.education = InstallService.randomArrayItem([
         CustomerEducation.UN_KNOW,
@@ -244,20 +251,20 @@ export class InstallService {
         CustomerMaritalStatus.OTHER,
       ]);
 
-      customer.numberOfChildren = InstallService.randomIntervalInt(0, 3);
+      customer.numberOfChildren = Utils.randomInt(0, 3);
 
-      customer.phoneNumber = InstallService.randomIntervalInt(
+      customer.phoneNumber = Utils.randomInt(
         10000000000,
         20000000000,
       ).toString();
 
       customer.weChat =
         'wc' +
-        InstallService.randomIntervalInt(0, 100000)
+        Utils.randomInt(0, 100000)
           .toString()
           .padStart(5, '0');
 
-      const qq = InstallService.randomIntervalInt(10000, 1000000000).toString();
+      const qq = Utils.randomInt(10000, 1000000000).toString();
 
       customer.qq = qq;
 
@@ -267,38 +274,141 @@ export class InstallService {
     }
   }
 
-  static randomName() {
-    const index = Math.floor(Math.random() * SURNAME.length);
-    const surname = SURNAME[index];
+  /**
+   * 随机真实姓名
+   */
+  private static randomRealName(gender) {
+    const surname = InstallService.randomArrayItem(SURNAME);
 
-    const time = Math.floor(Math.random() * 3) + 1;
+    return surname + InstallService.randomGivenName(gender);
+  }
 
-    const givenName = [];
-    for (let i = 0; i < time; i++) {
-      givenName.push(InstallService.randomCJK());
+  /**
+   * 随机昵称
+   */
+  private static randomNickName() {
+    const adjectiveList = [
+      '可爱',
+      '自然',
+      '完美',
+      '光明',
+      '真实',
+      '冰冷',
+      '幸运',
+      '华丽',
+      '敏捷',
+      '神圣',
+      '博学',
+      '轻松',
+      '简单',
+      '快乐',
+      '悲伤',
+      '忧郁',
+      '普通',
+      '神秘',
+      '奇妙',
+    ];
+
+    const nounList = [
+      '银河🌌',
+      '星星🌟',
+      '流星🌠',
+      '云☁',
+      '北风🌬',
+      '风景🏖',
+      '夜晚🌃',
+      '月🌛',
+      '彩虹🌈',
+      '火苗🔥',
+      '狐狸🦊',
+      '猫🐱',
+      '狗🐕',
+      '独角兽🦄',
+      '泉水⛲',
+      '水滴💧',
+      '雪花❄',
+      '沙漏⏳',
+      '气球🎈',
+      '四叶草🍀',
+    ];
+
+    const adjective = InstallService.randomArrayItem(adjectiveList);
+    const noun = InstallService.randomArrayItem(nounList);
+    return `${adjective}之${noun}`;
+  }
+
+  /**
+   * 随机数组项
+   * @param array 数组
+   */
+  private static randomArrayItem(array) {
+    return array[Utils.randomInt(0, array.length)];
+  }
+
+  /**
+   * 随机名字
+   * @param gender 性别
+   */
+  private static randomGivenName(gender) {
+    const maleGivenNameList = [
+      '超',
+      '伟',
+      '涛',
+      '磊',
+      '鹏',
+      '杰',
+      '强',
+      '浩',
+      '鑫',
+      '俊',
+      '宇',
+      '轩',
+      '子',
+      '然',
+      '博',
+      '文',
+      '涵',
+      '皓',
+      '昊',
+    ];
+    const femaleGivenNameList = [
+      '静',
+      '婷',
+      '婷婷',
+      '敏',
+      '丹',
+      '丽',
+      '雪',
+      '倩',
+      '颖',
+      '悦',
+      '涵',
+      '梓',
+      '怡',
+      '子',
+      '萱',
+      '欣',
+      '可',
+      '佳',
+      '梦',
+      '琪',
+    ];
+
+    let givenName = '';
+    switch (gender) {
+      case CustomerGender.MALE:
+        givenName = InstallService.randomArrayItem(maleGivenNameList);
+        break;
+      case CustomerGender.FEMALE:
+        givenName = InstallService.randomArrayItem(femaleGivenNameList);
+        break;
+      default:
+        givenName = InstallService.randomArrayItem(
+          maleGivenNameList.concat(femaleGivenNameList),
+        );
+        break;
     }
 
-    return surname + givenName.join('');
-  }
-
-  static randomArrayItem(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-
-  static randomInterval(low, high) {
-    const len = high - low;
-    return Math.random() * len + low;
-  }
-
-  static randomIntervalInt(low, high) {
-    return Math.floor(InstallService.randomInterval(low, high));
-  }
-
-  private static randomCJK() {
-    const low = 0x4e00;
-    const high = 0x9fa5;
-    const len = high - low;
-
-    return String.fromCodePoint(Math.floor(Math.random() * len + low));
+    return givenName;
   }
 }
