@@ -5,12 +5,12 @@ import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
  */
 export enum CustomerType {
   /**
-   * 普通
+   * 普通会员
    */
   NORMAL = '',
 
   /**
-   * 会员
+   * VIP会员
    */
   VIP = 'vip',
 }
@@ -198,8 +198,7 @@ export class Customer {
   occupation: string;
 
   /**
-   * 年收入
-   * 单位元
+   * 年收入（元）
    */
   @Column({ type: 'int', nullable: true })
   annualIncome: number;
