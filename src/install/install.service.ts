@@ -197,6 +197,11 @@ export class InstallService {
         CustomerGender.OTHER,
       ]);
 
+      const now = new Date();
+      const pass = new Date();
+      pass.setFullYear(now.getFullYear() - 100);
+      const birthday = new Date(Utils.randomInt(pass.getTime(), now.getTime()));
+
       customer.realName = InstallService.randomRealName(gender);
       customer.nickName = InstallService.randomNickName();
       const id = i.toString().padStart(7, '0');
@@ -216,19 +221,13 @@ export class InstallService {
         CustomerLevel.LEVEL_6,
       ]);
 
-      const now = new Date();
-      const pass = new Date();
-      pass.setFullYear(now.getFullYear() - 100);
-
       customer.registrationTime = new Date(
-        Utils.randomInt(pass.getTime(), now.getTime()),
+        Utils.randomInt(birthday.getTime(), now.getTime()),
       ).toISOString();
 
       customer.gender = gender;
 
-      customer.birthday = new Date(
-        Utils.randomInt(pass.getTime(), now.getTime()),
-      ).toISOString();
+      customer.birthday = birthday.toISOString();
 
       customer.city = InstallService.randomArrayItem(CITIES).code;
 
