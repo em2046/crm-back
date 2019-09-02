@@ -184,7 +184,7 @@ export class InstallService {
   }
 
   /**
-   * 安装会员
+   * 安装客户
    */
   private async installCustomer() {
     for (let i = 0; i < 100; i++) {
