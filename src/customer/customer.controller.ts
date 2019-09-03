@@ -1,28 +1,35 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { CustomerCreateDto } from './dto/customer-create.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Crud } from '@nestjsx/crud';
+import { Customer } from './customer.entity';
 
+const routesOption = {
+  decorators: [UseGuards(AuthGuard())],
+};
+
+@Crud({
+  model: {
+    type: Customer,
+  },
+  params: {
+    id: {
+      field: 'uuid',
+      type: 'uuid',
+      primary: true,
+    },
+  },
+  routes: {
+    getManyBase: routesOption,
+    getOneBase: routesOption,
+    createOneBase: routesOption,
+    createManyBase: routesOption,
+    updateOneBase: routesOption,
+    replaceOneBase: routesOption,
+    deleteOneBase: routesOption,
+  },
+})
 @Controller('customer')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
-
-  /**
-   * 查找全部客户
-   */
-  @UseGuards(AuthGuard())
-  @Get()
-  findAll() {
-    return this.customerService.findAll();
-  }
-
-  /**
-   * 新建客户
-   * @param createCustomerDto 客户信息
-   */
-  @UseGuards(AuthGuard())
-  @Post()
-  create(@Body() createCustomerDto: CustomerCreateDto) {
-    return this.customerService.create(createCustomerDto);
-  }
+  constructor(public service: CustomerService) {}
 }

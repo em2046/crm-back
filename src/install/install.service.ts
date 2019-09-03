@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Repository, getConnection } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import Origin from '../utils/origin';
@@ -8,6 +8,17 @@ import { Role } from '../role/role.entity';
 import { UserService } from '../user/user.service';
 import { UserCreateDto } from '../user/dto/user-create.dto';
 import { Permission } from '../permission/permission.entity';
+import { PERMISSION } from '../permission/permission';
+import { SURNAME } from './surname';
+import {
+  Customer,
+  CustomerEducation,
+  CustomerGender,
+  CustomerLevel,
+  CustomerMaritalStatus,
+  CustomerType,
+} from '../customer/customer.entity';
+import { CITIES } from './cities';
 
 @Injectable()
 export class InstallService {
@@ -18,6 +29,8 @@ export class InstallService {
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
     private readonly userService: UserService,
   ) {}
 
@@ -43,6 +56,7 @@ export class InstallService {
     await this.installRole();
     await this.installUserAdmin();
     await this.installUsers();
+    await this.installCustomer();
 
     return {
       code: 0,
@@ -61,6 +75,43 @@ export class InstallService {
   }
 
   /**
+   * 安装权限
+   */
+  private async installPermission() {
+    const permissions = [];
+    Object.values(PERMISSION).forEach(p => {
+      permissions.push(...Object.values(p));
+    });
+
+    await this.permissionRepository.save(permissions);
+  }
+
+  /**
+   * 安装角色
+   */
+  private async installRole() {
+    const roles = [
+      {
+        name: 'admin',
+        title: '管理员',
+        permissions: [PERMISSION.USER.CREATE, PERMISSION.USER.UPDATE],
+      },
+      {
+        name: 'operator',
+        title: '运营',
+        permissions: [PERMISSION.TASK.CREATE],
+      },
+      {
+        name: 'supervisor',
+        title: '客服主管',
+        permissions: [PERMISSION.TASK.ASSIGN],
+      },
+      { name: 'staff', title: '客服', permissions: [PERMISSION.TASK.EXECUTE] },
+    ];
+    await this.roleRepository.save(roles);
+  }
+
+  /**
    * 安装管理员
    */
   private async installUserAdmin() {
@@ -75,33 +126,6 @@ export class InstallService {
     userAdmin.avatar = '129464';
 
     await this.userRepository.save(userAdmin);
-  }
-
-  /**
-   * 安装角色
-   */
-  private async installRole() {
-    const permissionsManagement = await this.permissionRepository.findOne({
-      name: 'management',
-    });
-    const permissionsLogin = await this.permissionRepository.findOne({
-      name: 'login',
-    });
-    const roles = [
-      {
-        name: 'admin',
-        title: '管理员',
-        permissions: [permissionsLogin, permissionsManagement],
-      },
-      { name: 'operator', title: '运营', permissions: [permissionsLogin] },
-      {
-        name: 'supervisor',
-        title: '客服主管',
-        permissions: [permissionsLogin],
-      },
-      { name: 'staff', title: '客服', permissions: [permissionsLogin] },
-    ];
-    await this.roleRepository.save(roles);
   }
 
   /**
@@ -160,20 +184,229 @@ export class InstallService {
   }
 
   /**
-   * 安装权限
+   * 安装客户
    */
-  private async installPermission() {
-    const permissions = [
-      { name: 'management', title: '管理' },
-      { name: 'taskQuery', title: '任务查询' },
-      { name: 'taskCreate', title: '任务创建' },
-      { name: 'taskAssign', title: '任务指派' },
-      { name: 'taskExecute', title: '任务执行' },
-      { name: 'knowledgeQuery', title: '知识查询' },
-      { name: 'knowledgeManage', title: '知识管理' },
-      { name: 'customerQuery', title: '客户查询' },
-      { name: 'customerManage', title: '客户管理' },
+  private async installCustomer() {
+    for (let i = 0; i < 100; i++) {
+      const customer = new Customer();
+
+      const gender = InstallService.randomArrayItem([
+        CustomerGender.UN_KNOW,
+        CustomerGender.MALE,
+        CustomerGender.FEMALE,
+        CustomerGender.OTHER,
+      ]);
+
+      const now = new Date();
+      const pass = new Date();
+      pass.setFullYear(now.getFullYear() - 100);
+      const birthday = new Date(Utils.randomInt(pass.getTime(), now.getTime()));
+
+      customer.realName = InstallService.randomRealName(gender);
+      customer.nickName = InstallService.randomNickName();
+      const id = i.toString().padStart(7, '0');
+      customer.name = 'lv' + id;
+
+      customer.type = InstallService.randomArrayItem([
+        CustomerType.NORMAL,
+        CustomerType.VIP,
+      ]);
+
+      customer.level = InstallService.randomArrayItem([
+        CustomerLevel.LEVEL_1,
+        CustomerLevel.LEVEL_2,
+        CustomerLevel.LEVEL_3,
+        CustomerLevel.LEVEL_4,
+        CustomerLevel.LEVEL_5,
+        CustomerLevel.LEVEL_6,
+      ]);
+
+      customer.registrationTime = new Date(
+        Utils.randomInt(birthday.getTime(), now.getTime()),
+      ).toISOString();
+
+      customer.gender = gender;
+
+      customer.birthday = birthday.toISOString();
+
+      customer.city = InstallService.randomArrayItem(CITIES).code;
+
+      customer.annualIncome = Utils.randomInt(1_000, 1_000_000);
+
+      customer.education = InstallService.randomArrayItem([
+        CustomerEducation.UN_KNOW,
+        CustomerEducation.ASSOCIATE,
+        CustomerEducation.BACHELOR,
+        CustomerEducation.MASTER,
+        CustomerEducation.DOCTOR,
+        CustomerEducation.OTHER,
+      ]);
+
+      customer.maritalStatus = InstallService.randomArrayItem([
+        CustomerMaritalStatus.UN_KNOW,
+        CustomerMaritalStatus.MARRIED,
+        CustomerMaritalStatus.UNMARRIED,
+        CustomerMaritalStatus.OTHER,
+      ]);
+
+      customer.numberOfChildren = Utils.randomInt(0, 3);
+
+      customer.phoneNumber = Utils.randomInt(
+        10000000000,
+        20000000000,
+      ).toString();
+
+      customer.weChat =
+        'wc' +
+        Utils.randomInt(0, 100000)
+          .toString()
+          .padStart(5, '0');
+
+      const qq = Utils.randomInt(10000, 1000000000).toString();
+
+      customer.qq = qq;
+
+      customer.email = `${qq}@em2046.com`;
+
+      await this.customerRepository.save(customer);
+    }
+  }
+
+  /**
+   * 随机真实姓名
+   */
+  private static randomRealName(gender) {
+    const surname = InstallService.randomArrayItem(SURNAME);
+
+    return surname + InstallService.randomGivenName(gender);
+  }
+
+  /**
+   * 随机昵称
+   */
+  private static randomNickName() {
+    const adjectiveList = [
+      '可爱',
+      '自然',
+      '完美',
+      '光明',
+      '真实',
+      '冰冷',
+      '幸运',
+      '华丽',
+      '敏捷',
+      '神圣',
+      '博学',
+      '轻松',
+      '简单',
+      '快乐',
+      '悲伤',
+      '忧郁',
+      '普通',
+      '神秘',
+      '奇妙',
     ];
-    await this.permissionRepository.save(permissions);
+
+    const nounList = [
+      '银河🌌',
+      '星星🌟',
+      '流星🌠',
+      '云☁',
+      '北风🌬',
+      '风景🏖',
+      '夜晚🌃',
+      '月🌛',
+      '彩虹🌈',
+      '火苗🔥',
+      '狐狸🦊',
+      '猫🐱',
+      '狗🐕',
+      '独角兽🦄',
+      '泉水⛲',
+      '水滴💧',
+      '雪花❄',
+      '沙漏⏳',
+      '气球🎈',
+      '四叶草🍀',
+    ];
+
+    const adjective = InstallService.randomArrayItem(adjectiveList);
+    const noun = InstallService.randomArrayItem(nounList);
+    return `${adjective}之${noun}`;
+  }
+
+  /**
+   * 随机数组项
+   * @param array 数组
+   */
+  private static randomArrayItem(array) {
+    return array[Utils.randomInt(0, array.length)];
+  }
+
+  /**
+   * 随机名字
+   * @param gender 性别
+   */
+  private static randomGivenName(gender) {
+    const maleGivenNameList = [
+      '超',
+      '伟',
+      '涛',
+      '磊',
+      '鹏',
+      '杰',
+      '强',
+      '浩',
+      '鑫',
+      '俊',
+      '宇',
+      '轩',
+      '子',
+      '然',
+      '博',
+      '文',
+      '涵',
+      '皓',
+      '昊',
+    ];
+    const femaleGivenNameList = [
+      '静',
+      '婷',
+      '婷婷',
+      '敏',
+      '丹',
+      '丽',
+      '雪',
+      '倩',
+      '颖',
+      '悦',
+      '涵',
+      '梓',
+      '怡',
+      '子',
+      '萱',
+      '欣',
+      '可',
+      '佳',
+      '梦',
+      '琪',
+    ];
+
+    let givenName = '';
+    switch (gender) {
+      case CustomerGender.MALE:
+        givenName = InstallService.randomArrayItem(maleGivenNameList);
+        break;
+      case CustomerGender.FEMALE:
+        givenName = InstallService.randomArrayItem(femaleGivenNameList);
+        break;
+      default:
+        givenName = InstallService.randomArrayItem(
+          maleGivenNameList.concat(femaleGivenNameList),
+        );
+        break;
+    }
+
+    return givenName;
   }
 }

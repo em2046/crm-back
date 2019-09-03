@@ -38,4 +38,15 @@ export default class Utils {
       });
     });
   }
+
+  /**
+   * 获取两数之间的随机整数
+   * @param min 含最小值
+   * @param max 不含最大值
+   */
+  static randomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
 }

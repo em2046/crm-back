@@ -1,16 +1,31 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  IsAscii,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsISO8601,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  Length,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+import Utils from '../utils/utils';
 
 /**
  * 用户类型
  */
 export enum CustomerType {
   /**
-   * 普通
+   * 普通会员
    */
   NORMAL = '',
 
   /**
-   * 会员
+   * VIP会员
    */
   VIP = 'vip',
 }
@@ -19,7 +34,6 @@ export enum CustomerType {
  * 用户等级
  */
 export enum CustomerLevel {
-  LEVEL_0 = 0,
   LEVEL_1 = 1,
   LEVEL_2 = 2,
   LEVEL_3 = 3,
@@ -124,6 +138,9 @@ export class Customer {
   /**
    * 客户用户名
    */
+  @IsNotEmpty()
+  @Length(4, 256)
+  @Matches(Utils.identifierRule)
   @Index('customer_name_index', { unique: true })
   @Column({ length: 256, nullable: false })
   name: string;
@@ -131,18 +148,24 @@ export class Customer {
   /**
    * 昵称
    */
+  @IsNotEmpty()
+  @Length(2, 64)
   @Column({ length: 64, nullable: false })
   nickName: string;
 
   /**
    * 真实姓名
    */
+  @IsOptional()
+  @Length(0, 64)
   @Column({ length: 64, nullable: true })
   realName: string;
 
   /**
    * 类型
    */
+  @IsOptional()
+  @IsEnum(CustomerType)
   @Column({
     type: 'enum',
     enum: CustomerType,
@@ -154,10 +177,12 @@ export class Customer {
   /**
    * 等级
    */
+  @IsOptional()
+  @IsEnum(CustomerLevel)
   @Column({
     type: 'enum',
     enum: CustomerLevel,
-    default: CustomerLevel.LEVEL_0,
+    default: CustomerLevel.LEVEL_1,
     nullable: true,
   })
   level: CustomerLevel;
@@ -165,12 +190,14 @@ export class Customer {
   /**
    * 注册时间
    */
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   registrationTime: string;
 
   /**
    * 性别
    */
+  @IsOptional()
+  @IsEnum(CustomerGender)
   @Column({
     type: 'enum',
     enum: CustomerGender,
@@ -182,31 +209,42 @@ export class Customer {
   /**
    * 生日
    */
-  @Column({ type: 'timestamp', nullable: true })
+  @IsOptional()
+  @IsISO8601()
+  @Column({ type: 'datetime', nullable: true })
   birthday: string;
 
   /**
    * 城市
    */
+  @IsOptional()
+  @Length(0, 64)
   @Column({ length: 64, nullable: true })
   city: string;
 
   /**
    * 职业
    */
+  @IsOptional()
+  @Length(0, 64)
   @Column({ length: 64, nullable: true })
   occupation: string;
 
   /**
-   * 年收入
-   * 单位元
+   * 年收入（元）
    */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(2147483647)
   @Column({ type: 'int', nullable: true })
   annualIncome: number;
 
   /**
    * 学历
    */
+  @IsOptional()
+  @IsEnum(CustomerEducation)
   @Column({
     type: 'enum',
     enum: CustomerEducation,
@@ -218,6 +256,8 @@ export class Customer {
   /**
    * 婚姻状况
    */
+  @IsOptional()
+  @IsEnum(CustomerMaritalStatus)
   @Column({
     type: 'enum',
     enum: CustomerMaritalStatus,
@@ -229,30 +269,45 @@ export class Customer {
   /**
    * 孩子数量
    */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(127)
   @Column({ type: 'tinyint', nullable: true })
   numberOfChildren: number;
 
   /**
    * 手机号
    */
+  @IsOptional()
+  @IsPhoneNumber('CN')
   @Column({ length: 64, nullable: true })
   phoneNumber: string;
 
   /**
    * 微信号
    */
+  @IsOptional()
+  @Length(0, 64)
+  @Matches(Utils.identifierRule)
   @Column({ length: 64, nullable: true })
   weChat: string;
 
   /**
    * QQ号
    */
+  @IsOptional()
+  @Length(0, 64)
+  @IsAscii()
   @Column({ length: 64, nullable: true })
   qq: string;
 
   /**
    * 邮箱地址
    */
+  @IsOptional()
+  @Length(0, 512)
+  @IsEmail()
   @Column({ length: 512, nullable: true })
   email: string;
 }
