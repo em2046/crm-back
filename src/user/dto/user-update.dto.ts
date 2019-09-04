@@ -1,5 +1,6 @@
 import { IsEmail, IsOptional, Length } from 'class-validator';
 import { Role } from '../../role/role.entity';
+import Utils from '../../utils/utils';
 
 export class UserUpdateDto {
   @IsOptional()
@@ -12,7 +13,7 @@ export class UserUpdateDto {
 
   @IsOptional()
   @Length(0, 512)
-  @IsEmail()
+  @IsEmail({}, { message: Utils.errorMessage.isEmail('邮箱地址') })
   readonly email: string;
 
   @IsOptional()

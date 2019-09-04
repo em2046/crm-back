@@ -6,6 +6,7 @@ import {
   Length,
 } from 'class-validator';
 import { Role } from '../../role/role.entity';
+import Utils from '../../utils/utils';
 
 export class UserCreateDto {
   @IsNotEmpty()
@@ -18,12 +19,12 @@ export class UserCreateDto {
 
   @IsNotEmpty()
   @Length(0, 512)
-  @IsEmail()
+  @IsEmail({}, { message: Utils.errorMessage.isEmail('邮箱地址') })
   readonly email: string;
 
   @IsNotEmpty()
   @Length(4, 256)
-  @IsAscii()
+  @IsAscii({ message: Utils.errorMessage.isAscii('密码') })
   readonly password: string;
 
   @IsOptional()

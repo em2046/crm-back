@@ -7,6 +7,28 @@ export default class Utils {
   static identifierRule = /^[a-zA-Z][\w\-]*$/;
 
   /**
+   * 错误信息
+   */
+  static errorMessage = {
+    isPhoneNumber: label => {
+      return '您输入的' + label + '有误，必须输入有效的中国大陆电话号码';
+    },
+    isIdentifier: label => {
+      return (
+        '您输入的' +
+        label +
+        '有误，必须输入有效的账号（仅包含字母数字下划线或横杆，并且以字母开头）'
+      );
+    },
+    isEmail: label => {
+      return '您输入的' + label + '有误，必须输入有效的电子邮件地址';
+    },
+    isAscii: label => {
+      return '您输入的' + label + '有误，必须输入有效的 ASCII 码字符';
+    },
+  };
+
+  /**
    * 使用密码和盐生成安全存储字符串
    * @param password 密码
    * @param salt 盐

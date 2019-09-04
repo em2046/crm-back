@@ -140,7 +140,9 @@ export class Customer {
    */
   @IsNotEmpty()
   @Length(4, 256)
-  @Matches(Utils.identifierRule)
+  @Matches(Utils.identifierRule, {
+    message: Utils.errorMessage.isIdentifier('客户用户名'),
+  })
   @Index('customer_name_index', { unique: true })
   @Column({ length: 256, nullable: false })
   name: string;
@@ -280,7 +282,7 @@ export class Customer {
    * 手机号
    */
   @IsOptional()
-  @IsPhoneNumber('CN')
+  @IsPhoneNumber('CN', { message: Utils.errorMessage.isPhoneNumber('手机号') })
   @Column({ length: 64, nullable: true })
   phoneNumber: string;
 
@@ -289,7 +291,9 @@ export class Customer {
    */
   @IsOptional()
   @Length(0, 64)
-  @Matches(Utils.identifierRule)
+  @Matches(Utils.identifierRule, {
+    message: Utils.errorMessage.isIdentifier('微信号'),
+  })
   @Column({ length: 64, nullable: true })
   weChat: string;
 
@@ -298,7 +302,7 @@ export class Customer {
    */
   @IsOptional()
   @Length(0, 64)
-  @IsAscii()
+  @IsAscii({ message: Utils.errorMessage.isAscii('QQ号') })
   @Column({ length: 64, nullable: true })
   qq: string;
 
@@ -307,7 +311,7 @@ export class Customer {
    */
   @IsOptional()
   @Length(0, 512)
-  @IsEmail()
+  @IsEmail({}, { message: Utils.errorMessage.isEmail('邮箱地址') })
   @Column({ length: 512, nullable: true })
   email: string;
 }
