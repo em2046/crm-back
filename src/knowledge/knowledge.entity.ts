@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsNotEmpty, IsOptional, Length } from 'class-validator';
 
 /**
  * 知识
@@ -17,24 +18,34 @@ export class Knowledge {
   /**
    * 标题
    */
-  @Column()
+  @IsNotEmpty()
+  @Length(1, 64)
+  @Column({ length: 64 })
   title: string;
 
   /**
    * 内容
    */
-  @Column({ type: 'text' })
+  @IsOptional()
+  @Column({ type: 'text', nullable: true })
   content: string;
 
   /**
    * 作者
    */
-  @Column()
+  @IsOptional()
+  @Column({ length: 64, nullable: true })
   author: string;
 
+  /**
+   * 创建时间
+   */
   @CreateDateColumn()
   createDate;
 
+  /**
+   * 更新时间
+   */
   @UpdateDateColumn()
   updateDate;
 }

@@ -1,7 +1,9 @@
 const fsPromises = require('fs').promises;
 const path = require('path');
+const pinyin = require('pinyin');
 const formatPath = '../.prettierrc';
 const citiesPath = './cities.txt';
+const chineseNationPath = './chinese-nation.txt';
 const citiesDistPath = '../src/install/cities.ts';
 const endOfLine = /(?:\n|\r|\r\n)/;
 const fileOption = {
@@ -23,15 +25,52 @@ async function main() {
     fileOption,
   );
 
+  let chineseNationText = await fsPromises.readFile(
+    path.resolve(__dirname, chineseNationPath),
+    fileOption,
+  );
+
+  let chineseNationLines = chineseNationText.split(endOfLine);
+  let chineseNationList = chineseNationLines.filter(chineseNationLine => {
+    return chineseNationLine !== '';
+  });
+  let nation = chineseNationList.join('|');
+
   let citiesLines = citiesText.split(endOfLine);
   let citiesList = citiesLines.filter(citiesLine => {
     return citiesLine !== '';
   });
   let citiesSet = citiesList.map(citiesLine => {
     let [code, name] = citiesLine.split(':');
+    let suffixList = [
+      '市',
+      '省',
+      '自治区',
+      '盟',
+      '自治州',
+      '地区',
+      '特别行政区',
+    ];
+    const suffix = suffixList.join('|');
+    const citySuffixRule = new RegExp(`(${nation})*(${suffix})$`);
+    let shortName = name.replace(citySuffixRule, '');
+
+    let pinyinNormal = pinyin(name, {
+      style: pinyin.STYLE_NORMAL,
+    })
+      .flat()
+      .join('');
+    let pinyinFirstLetter = pinyin(name, {
+      style: pinyin.STYLE_FIRST_LETTER,
+    })
+      .flat()
+      .join('');
     return {
-      code: code,
+      code,
       name,
+      shortName,
+      pinyin: pinyinNormal,
+      pinyinFirstLetter,
     };
   });
 
