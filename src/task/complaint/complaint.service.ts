@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { TaskStatus } from '../task.entity';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
 import { UserService } from '../../user/user.service';
+import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
 
 @Injectable()
 export class ComplaintService {
@@ -42,8 +43,24 @@ export class ComplaintService {
     return await this.complaintRepository.save(newComplaint);
   }
 
-  async findAll() {
-    return await this.complaintRepository.find();
+  async findAll(complaintFindAllDto: ComplaintFindAllDto) {
+    const page = parseInt(complaintFindAllDto.page, 10);
+    const limit = parseInt(complaintFindAllDto.limit, 10);
+
+    const options = {
+      skip: (page - 1) * limit,
+      take: limit,
+    };
+    const count = await this.complaintRepository.count(options);
+
+    const data = await this.complaintRepository.find(options);
+    return {
+      count: data.length,
+      data,
+      page,
+      pageCount: Math.ceil(count / limit),
+      total: count,
+    };
   }
 
   async assign(uuid: string, complaintAssignDto: ComplaintMutateDto) {

@@ -5,12 +5,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ComplaintCreateDto } from './dto/complaint-create.dto';
 import { ComplaintService } from './complaint.service';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
+import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
 
 @Controller('complaint')
 export class ComplaintController {
@@ -21,8 +23,8 @@ export class ComplaintController {
    */
   @UseGuards(AuthGuard())
   @Get()
-  findAll() {
-    return this.complaintService.findAll();
+  findAll(@Query() complaintFindAllDto: ComplaintFindAllDto) {
+    return this.complaintService.findAll(complaintFindAllDto);
   }
 
   /**
