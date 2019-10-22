@@ -100,4 +100,8 @@ export class ComplaintService {
 
     return await this.complaintRepository.save(task);
   }
+
+  async remove(uuid: string) {
+    return await this.complaintRepository.delete(uuid);
+  }
 }

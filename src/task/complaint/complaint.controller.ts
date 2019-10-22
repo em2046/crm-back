@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -54,5 +55,11 @@ export class ComplaintController {
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.finish(uuid, complaintMutateDto);
+  }
+
+  @UseGuards(AuthGuard())
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid) {
+    return this.complaintService.remove(uuid);
   }
 }
