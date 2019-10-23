@@ -14,6 +14,7 @@ import { ComplaintCreateDto } from './dto/complaint-create.dto';
 import { ComplaintService } from './complaint.service';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
 import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
+import { ComplaintUpdateDto } from './dto/complaint-update.dto';
 
 @Controller('complaint')
 export class ComplaintController {
@@ -29,12 +30,26 @@ export class ComplaintController {
   }
 
   /**
+   * 查询某个投诉
+   */
+  @UseGuards(AuthGuard())
+  @Get(':uuid')
+  findOne(@Param('uuid') uuid) {
+    return this.complaintService.findOne(uuid);
+  }
+
+  /**
    * 创建投诉
    */
   @UseGuards(AuthGuard())
   @Post()
   create(@Body() complaintCreateDto: ComplaintCreateDto) {
     return this.complaintService.create(complaintCreateDto);
+  }
+
+  @Patch(':uuid/update')
+  update(@Param('uuid') uuid, @Body() complaintUpdateDto: ComplaintUpdateDto) {
+    return this.complaintService.update(uuid, complaintUpdateDto);
   }
 
   /**

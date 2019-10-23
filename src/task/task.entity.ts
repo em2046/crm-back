@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Length } from 'class-validator';
 
 /**
  * 任务状态
@@ -35,13 +36,14 @@ export abstract class Task {
   /**
    * 标题
    */
-  @Column()
+  @Length(1, 64)
+  @Column({ length: 64, nullable: false })
   title: string;
 
   /**
    * 描述
    */
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   /**

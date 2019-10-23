@@ -7,6 +7,7 @@ import { TaskStatus } from '../task.entity';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
 import { UserService } from '../../user/user.service';
 import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
+import { ComplaintUpdateDto } from './dto/complaint-update.dto';
 
 @Injectable()
 export class ComplaintService {
@@ -103,5 +104,24 @@ export class ComplaintService {
 
   async remove(uuid: string) {
     return await this.complaintRepository.delete(uuid);
+  }
+
+  async findOne(uuid: string) {
+    return await this.complaintRepository.findOne(uuid);
+  }
+
+  async update(
+    uuid: string,
+    complaintUpdateDto: ComplaintUpdateDto,
+  ): Promise<Complaint> {
+    const foundComplaint = await this.complaintRepository.findOne(uuid);
+    if (!foundComplaint) {
+      throw new NotAcceptableException('未找到任务');
+    }
+
+    foundComplaint.title = complaintUpdateDto.title;
+    foundComplaint.description = complaintUpdateDto.description;
+
+    return this.complaintRepository.save(foundComplaint);
   }
 }
