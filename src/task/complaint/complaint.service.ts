@@ -74,12 +74,12 @@ export class ComplaintService {
 
   async assign(uuid: string, complaintAssignDto: ComplaintMutateDto) {
     const assignee = complaintAssignDto.assignee;
-    this.mutation(uuid, assignee, TaskStatus.ASSIGNED);
+    await this.mutation(uuid, assignee, TaskStatus.ASSIGNED);
   }
 
   async finish(uuid: string, complaintFinishDto: ComplaintMutateDto) {
     const assignee = complaintFinishDto.assignee;
-    this.mutation(uuid, assignee, TaskStatus.FINISHED);
+    await this.mutation(uuid, assignee, TaskStatus.FINISHED);
   }
 
   /**
