@@ -8,6 +8,8 @@ import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
 import { UserService } from '../../user/user.service';
 import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
 import { ComplaintUpdateDto } from './dto/complaint-update.dto';
+import { User } from '../../user/user.entity';
+import Filter from '../../utils/filter';
 
 @Injectable()
 export class ComplaintService {
@@ -29,7 +31,7 @@ export class ComplaintService {
 
     //region 查询用户是否存在
     const assignee = complaintCreateDto.assignee;
-    const userExist = await this.userService.exist(assignee);
+    const userExist = await this.userService.exist(assignee.uuid);
 
     if (!userExist) {
       throw new NotAcceptableException('用户不存在');
@@ -51,10 +53,16 @@ export class ComplaintService {
     const options = {
       skip: (page - 1) * limit,
       take: limit,
+      relations: ['assignee'],
     };
     const count = await this.complaintRepository.count(options);
 
     const data = await this.complaintRepository.find(options);
+
+    data.forEach(item => {
+      item.assignee = Filter.userFilter(item.assignee) as User;
+    });
+
     return {
       count: data.length,
       data,
@@ -80,7 +88,7 @@ export class ComplaintService {
    * @param assignee 被指派人
    * @param status 变更后的状态
    */
-  async mutation(uuid: string, assignee: string, status: TaskStatus) {
+  async mutation(uuid: string, assignee: User, status: TaskStatus) {
     //region 查询是否已有此任务
     const task = await this.complaintRepository.findOne(uuid);
     if (!task) {
@@ -89,7 +97,7 @@ export class ComplaintService {
     //endregion
 
     //region 查询用户是否存在
-    const userExist = await this.userService.exist(assignee);
+    const userExist = await this.userService.exist(assignee.uuid);
 
     if (!userExist) {
       throw new NotAcceptableException('用户不存在');
@@ -107,7 +115,11 @@ export class ComplaintService {
   }
 
   async findOne(uuid: string) {
-    return await this.complaintRepository.findOne(uuid);
+    const complaint = await this.complaintRepository.findOne(uuid, {
+      relations: ['assignee'],
+    });
+    complaint.assignee = Filter.userFilter(complaint.assignee) as User;
+    return complaint;
   }
 
   async update(

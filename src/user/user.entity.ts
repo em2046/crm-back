@@ -4,10 +4,12 @@ import {
   Index,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../role/role.entity';
 import { Exclude } from 'class-transformer';
+import { Task } from '../task/task.entity';
 
 /**
  * 用户
@@ -63,4 +65,7 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];
+
+  @OneToMany(type => Task, task => task.assignee)
+  tasks: Task[];
 }

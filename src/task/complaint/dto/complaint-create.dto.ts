@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsUUID, Length } from 'class-validator';
+import { User } from '../../../user/user.entity';
 
 export class ComplaintCreateDto {
   @IsNotEmpty()
@@ -10,6 +11,5 @@ export class ComplaintCreateDto {
   readonly description: string;
 
   @IsNotEmpty()
-  @IsUUID()
-  readonly assignee: string;
+  readonly assignee: User;
 }

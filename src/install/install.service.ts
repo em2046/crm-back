@@ -457,7 +457,7 @@ export class InstallService {
       const c = {
         title: complaint.title,
         description: complaint.description,
-        assignee: supervisor.uuid,
+        assignee: supervisor,
       };
       await this.complaintRepository.save(c);
     }

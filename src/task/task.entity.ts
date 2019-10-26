@@ -1,10 +1,13 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Length } from 'class-validator';
+import { User } from '../user/user.entity';
 
 /**
  * 任务状态
@@ -29,6 +32,7 @@ export enum TaskStatus {
 /**
  * 任务
  */
+@Entity()
 export abstract class Task {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
@@ -46,11 +50,8 @@ export abstract class Task {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  /**
-   * 当前处理人
-   */
-  @Column()
-  assignee: string;
+  @ManyToOne(type => User, user => user.tasks)
+  assignee: User;
 
   /**
    * 状态
