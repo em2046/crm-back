@@ -12,5 +12,6 @@ import { PassportModule } from '@nestjs/passport';
   ],
   controllers: [CustomerController],
   providers: [CustomerService],
+  exports: [CustomerService],
 })
 export class CustomerModule {}

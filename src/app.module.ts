@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { InstallModule } from './install/install.module';
 import { TaskModule } from './task/task.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
+import { LabelModule } from './label/label.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
     InstallModule,
     TaskModule,
     KnowledgeModule,
+    LabelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
