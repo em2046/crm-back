@@ -25,13 +25,17 @@ function handleGroup(group) {
 function handleRule(json) {
   const [attr, operator, value] = json.rule;
   let filterValue;
-  switch (typeof value) {
-    case 'string':
-      filterValue = `'${value}'`;
-      break;
-    default:
-      filterValue = value;
-      break;
+
+  if (typeof value === 'string') {
+    filterValue = `'${value}'`;
+  } else if (Array.isArray(value)) {
+    filterValue = `(${value
+      .map(text => {
+        return `'${text}'`;
+      })
+      .join(',')})`;
+  } else {
+    filterValue = value;
   }
 
   return `${attr} ${operator} ${filterValue}`;
@@ -47,48 +51,7 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
   }
 
   async query(queryDto: any) {
-    const queryJson = {
-      type: 'GROUP',
-      operator: 'AND',
-      children: [
-        {
-          type: 'GROUP',
-          operator: 'AND',
-          children: [
-            {
-              type: 'GROUP',
-              operator: 'AND',
-              children: [
-                {
-                  type: 'RULE',
-                  rule: ['type', '=', 'vip'],
-                },
-              ],
-            },
-            {
-              type: 'RULE',
-              rule: ['level', '=', 6],
-            },
-          ],
-        },
-        {
-          type: 'GROUP',
-          operator: 'AND',
-          children: [
-            {
-              type: 'RULE',
-              rule: ['registrationTime', '>', '2015-10-06'],
-            },
-            {
-              type: 'RULE',
-              rule: ['registrationTime', '<', '2015-10-07'],
-            },
-          ],
-        },
-      ],
-    };
-
-    const sql = jsonToSql(queryJson);
+    const sql = jsonToSql(queryDto);
     const connection = getConnection();
     return await connection.query(`SELECT * FROM customer where ${sql}`);
   }

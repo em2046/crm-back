@@ -9,6 +9,7 @@ import { Permission } from '../permission/permission.entity';
 import { Customer } from '../customer/customer.entity';
 import { Knowledge } from '../knowledge/knowledge.entity';
 import { Complaint } from '../task/complaint/complaint.entity';
+import { Label } from '../label/label.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Complaint } from '../task/complaint/complaint.entity';
       Customer,
       Knowledge,
       Complaint,
+      Label,
     ]),
     UserModule,
   ],

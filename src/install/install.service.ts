@@ -25,6 +25,7 @@ import { Knowledge } from '../knowledge/knowledge.entity';
 import postList from './post-list';
 import { Complaint } from '../task/complaint/complaint.entity';
 import complaintList from './complaint-list';
+import { Label } from '../label/label.entity';
 
 const fsPromises = fs.promises;
 
@@ -47,6 +48,8 @@ export class InstallService {
     private readonly knowledgeRepository: Repository<Knowledge>,
     @InjectRepository(Complaint)
     private readonly complaintRepository: Repository<Complaint>,
+    @InjectRepository(Label)
+    private readonly labelRepository: Repository<Label>,
     private readonly userService: UserService,
   ) {}
 
@@ -75,6 +78,7 @@ export class InstallService {
     await this.installCustomer();
     await this.installKnowledge();
     await this.installComplaint();
+    await this.installLabel();
 
     return {
       code: 0,
@@ -468,5 +472,42 @@ export class InstallService {
       path.resolve(__dirname, filePath),
       fileOption,
     )) as string;
+  }
+
+  private async installLabel() {
+    const label1 = {
+      title: '大龄高学历未婚男性',
+      rule: {
+        type: 'GROUP',
+        operator: 'AND',
+        children: [
+          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          {
+            type: 'RULE',
+            rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
+          },
+          { type: 'RULE', rule: ['maritalStatus', 'IN', ['unmarried']] },
+          { type: 'RULE', rule: ['gender', 'IN', ['male']] },
+        ],
+      },
+    } as Label;
+    const label2 = {
+      title: '大龄高学历未婚女性',
+      rule: {
+        type: 'GROUP',
+        operator: 'AND',
+        children: [
+          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          {
+            type: 'RULE',
+            rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
+          },
+          { type: 'RULE', rule: ['maritalStatus', 'IN', ['unmarried']] },
+          { type: 'RULE', rule: ['gender', 'IN', ['female']] },
+        ],
+      },
+    } as Label;
+    await this.labelRepository.save(label1);
+    await this.labelRepository.save(label2);
   }
 }
