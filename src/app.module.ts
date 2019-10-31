@@ -13,6 +13,7 @@ import { InstallModule } from './install/install.module';
 import { TaskModule } from './task/task.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { LabelModule } from './label/label.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { LabelModule } from './label/label.module';
     TaskModule,
     KnowledgeModule,
     LabelModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
