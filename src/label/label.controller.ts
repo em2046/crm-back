@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { Crud } from '@nestjsx/crud';
+import { CustomerService } from '../customer/customer.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Knowledge } from './knowledge.entity';
-import { KnowledgeService } from './knowledge.service';
-import { SearchDto } from './dto/search.dto';
+import { Crud } from '@nestjsx/crud';
+import { Label } from './label.entity';
+import { LabelService } from './label.service';
 
 const routesOption = {
   decorators: [UseGuards(AuthGuard())],
@@ -11,7 +11,7 @@ const routesOption = {
 
 @Crud({
   model: {
-    type: Knowledge,
+    type: Label,
   },
   params: {
     id: {
@@ -30,13 +30,15 @@ const routesOption = {
     deleteOneBase: routesOption,
   },
 })
-@Controller('knowledge')
-export class KnowledgeController {
-  constructor(public service: KnowledgeService) {}
+@Controller('label')
+export class LabelController {
+  constructor(
+    public service: LabelService,
+    public customerService: CustomerService,
+  ) {}
 
-  @Post('search')
-  search(@Body() searchDto: SearchDto) {
-    const keyword = searchDto.keyword;
-    return this.service.search(keyword);
+  @Post('query')
+  async query(@Body() queryDto) {
+    return await this.customerService.query(queryDto);
   }
 }

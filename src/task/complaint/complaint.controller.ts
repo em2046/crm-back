@@ -1,16 +1,20 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ComplaintCreateDto } from './dto/complaint-create.dto';
 import { ComplaintService } from './complaint.service';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
+import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
+import { ComplaintUpdateDto } from './dto/complaint-update.dto';
 
 @Controller('complaint')
 export class ComplaintController {
@@ -21,8 +25,17 @@ export class ComplaintController {
    */
   @UseGuards(AuthGuard())
   @Get()
-  findAll() {
-    return this.complaintService.findAll();
+  findAll(@Query() complaintFindAllDto: ComplaintFindAllDto) {
+    return this.complaintService.findAll(complaintFindAllDto);
+  }
+
+  /**
+   * 查询某个投诉
+   */
+  @UseGuards(AuthGuard())
+  @Get(':uuid')
+  findOne(@Param('uuid') uuid) {
+    return this.complaintService.findOne(uuid);
   }
 
   /**
@@ -32,6 +45,11 @@ export class ComplaintController {
   @Post()
   create(@Body() complaintCreateDto: ComplaintCreateDto) {
     return this.complaintService.create(complaintCreateDto);
+  }
+
+  @Patch(':uuid/update')
+  update(@Param('uuid') uuid, @Body() complaintUpdateDto: ComplaintUpdateDto) {
+    return this.complaintService.update(uuid, complaintUpdateDto);
   }
 
   /**
@@ -52,5 +70,11 @@ export class ComplaintController {
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.finish(uuid, complaintMutateDto);
+  }
+
+  @UseGuards(AuthGuard())
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid) {
+    return this.complaintService.remove(uuid);
   }
 }

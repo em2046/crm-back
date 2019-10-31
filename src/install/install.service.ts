@@ -22,6 +22,10 @@ import {
 } from '../customer/customer.entity';
 import { CITIES } from './cities';
 import { Knowledge } from '../knowledge/knowledge.entity';
+import postList from './post-list';
+import { Complaint } from '../task/complaint/complaint.entity';
+import complaintList from './complaint-list';
+import { Label } from '../label/label.entity';
 
 const fsPromises = fs.promises;
 
@@ -42,6 +46,10 @@ export class InstallService {
     private readonly customerRepository: Repository<Customer>,
     @InjectRepository(Knowledge)
     private readonly knowledgeRepository: Repository<Knowledge>,
+    @InjectRepository(Complaint)
+    private readonly complaintRepository: Repository<Complaint>,
+    @InjectRepository(Label)
+    private readonly labelRepository: Repository<Label>,
     private readonly userService: UserService,
   ) {}
 
@@ -69,6 +77,8 @@ export class InstallService {
     await this.installUsers();
     await this.installCustomer();
     await this.installKnowledge();
+    await this.installComplaint();
+    await this.installLabel();
 
     return {
       code: 0,
@@ -426,65 +436,6 @@ export class InstallService {
    * 安装知识库文章
    */
   private async installKnowledge() {
-    const postList = [
-      {
-        title: '中国优秀旅游城市检查标准',
-        author: '',
-        path: '1.html',
-      },
-      {
-        title: '中华人民共和国旅游法',
-        author: '全国人民代表大会常务委员会',
-        path: '2.html',
-      },
-      {
-        title: '关于批准发布北京欢乐谷等70家景区为国家4A级旅游景区公告的决定',
-        author: '全国旅游景区质量等级评定委员会',
-        path: '3.html',
-      },
-      {
-        title: '中国公民自费出国旅游管理暂行办法',
-        author: '中华人民共和国国务院',
-        path: '4.html',
-      },
-      {
-        title: '中国公民出国旅游管理办法',
-        author: '中华人民共和国国务院',
-        path: '5.html',
-      },
-      {
-        title: '国家旅游局关于旅游不文明行为记录管理暂行办法',
-        author: '国家旅游局',
-        path: '6.html',
-      },
-      {
-        title: '国务院办公厅关于进一步促进旅游投资和消费的若干意见',
-        author: '中华人民共和国国务院办公厅',
-        path: '7.html',
-      },
-      {
-        title: '关于进一步发展假日旅游的若干意见',
-        author: '',
-        path: '8.html',
-      },
-      {
-        title:
-          '国务院办公厅转发国家旅游局等部门关于进一步发展假日旅游若干意见的通知',
-        author: '中华人民共和国国务院办公厅',
-        path: '9.html',
-      },
-      {
-        title: '最高人民法院关于审理旅游纠纷案件适用法律若干问题的规定',
-        author: '中华人民共和国最高人民法院',
-        path: '10.html',
-      },
-      {
-        title: '旅游景区质量等级评定管理办法',
-        author: '',
-        path: '11.html',
-      },
-    ];
-
     for (const post of postList) {
       const content = await InstallService.loadFile(
         path.join('../assets/knowledge', post.path),
@@ -498,10 +449,65 @@ export class InstallService {
     }
   }
 
+  /**
+   * 安装投诉
+   */
+  private async installComplaint() {
+    const supervisor = await this.userRepository.findOne({
+      name: 'supervisor',
+    });
+
+    for (const complaint of complaintList) {
+      const c = {
+        title: complaint.title,
+        description: complaint.description,
+        assignee: supervisor,
+      };
+      await this.complaintRepository.save(c);
+    }
+  }
+
   static async loadFile(filePath) {
     return (await fsPromises.readFile(
       path.resolve(__dirname, filePath),
       fileOption,
     )) as string;
+  }
+
+  private async installLabel() {
+    const label1 = {
+      title: '大龄高学历未婚男性',
+      rule: {
+        type: 'GROUP',
+        operator: 'AND',
+        children: [
+          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          {
+            type: 'RULE',
+            rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
+          },
+          { type: 'RULE', rule: ['maritalStatus', 'IN', ['unmarried']] },
+          { type: 'RULE', rule: ['gender', 'IN', ['male']] },
+        ],
+      },
+    } as Label;
+    const label2 = {
+      title: '大龄高学历未婚女性',
+      rule: {
+        type: 'GROUP',
+        operator: 'AND',
+        children: [
+          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          {
+            type: 'RULE',
+            rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
+          },
+          { type: 'RULE', rule: ['maritalStatus', 'IN', ['unmarried']] },
+          { type: 'RULE', rule: ['gender', 'IN', ['female']] },
+        ],
+      },
+    } as Label;
+    await this.labelRepository.save(label1);
+    await this.labelRepository.save(label2);
   }
 }

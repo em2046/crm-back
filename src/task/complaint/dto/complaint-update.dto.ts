@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsUUID, Length } from 'class-validator';
 import { User } from '../../../user/user.entity';
 
-export class ComplaintCreateDto {
+export class ComplaintUpdateDto {
   @IsNotEmpty()
   @Length(1, 64)
   readonly title: string;
@@ -10,6 +10,6 @@ export class ComplaintCreateDto {
   @Length(0, 4096)
   readonly description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   readonly assignee: User;
 }
