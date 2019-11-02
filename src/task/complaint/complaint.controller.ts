@@ -61,6 +61,7 @@ export class ComplaintController {
    * @param complaintMutateDto 数据
    */
   @UseGuards(AuthGuard())
+  @Permissions('task_assign')
   @Patch(':uuid/assign')
   assign(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.assign(uuid, complaintMutateDto);
@@ -72,12 +73,14 @@ export class ComplaintController {
    * @param complaintMutateDto 数据
    */
   @UseGuards(AuthGuard())
+  @Permissions('task_execute')
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.finish(uuid, complaintMutateDto);
   }
 
   @UseGuards(AuthGuard())
+  @Permissions('task_delete')
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
     return this.complaintService.remove(uuid);

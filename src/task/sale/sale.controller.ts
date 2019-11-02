@@ -15,6 +15,7 @@ import { SaleUpdateDto } from './dto/sale-update.dto';
 import { SaleMutateDto } from './dto/sale-mutate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SaleCreateDto } from './dto/sale-create.dto';
+import { Permissions } from '../../permissions.decorator';
 
 @Controller('sale')
 export class SaleController {
@@ -39,6 +40,7 @@ export class SaleController {
   }
 
   @UseGuards(AuthGuard())
+  @Permissions('task_create')
   @Post()
   create(@Body() saleCreateDto: SaleCreateDto) {
     return this.saleService.create(saleCreateDto);
@@ -50,6 +52,7 @@ export class SaleController {
    * @param saleMutateDto 数据
    */
   @UseGuards(AuthGuard())
+  @Permissions('task_assign')
   @Patch(':uuid/assign')
   assign(@Param('uuid') uuid, @Body() saleMutateDto: SaleMutateDto) {
     return this.saleService.assign(uuid, saleMutateDto);
@@ -61,12 +64,14 @@ export class SaleController {
    * @param saleMutateDto 数据
    */
   @UseGuards(AuthGuard())
+  @Permissions('task_execute')
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() saleMutateDto: SaleMutateDto) {
     return this.saleService.finish(uuid, saleMutateDto);
   }
 
   @UseGuards(AuthGuard())
+  @Permissions('task_delete')
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
     return this.saleService.remove(uuid);

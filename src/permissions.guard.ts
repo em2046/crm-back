@@ -25,23 +25,20 @@ export class PermissionsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const userUuid = request.headers['user-uuid'];
 
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       const user = await this.userService.findOne(userUuid);
-
       const roles = user.roles;
-
       for (const role of roles) {
-        const foundRole = await this.roleService.findOne(role);
+        const foundRole = await this.roleService.findOneInner(role.uuid);
         const userPermissions = foundRole.permissions;
 
-        const hasPermission = () =>
-          userPermissions.some(permission =>
-            permissions.includes(permission.name),
-          );
+        for (const permission of userPermissions) {
+          const found = permissions.includes(permission.name);
 
-        if (hasPermission) {
-          resolve(true);
-          return;
+          if (found) {
+            resolve(true);
+            return;
+          }
         }
       }
 
