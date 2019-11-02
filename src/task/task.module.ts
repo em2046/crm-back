@@ -30,6 +30,7 @@ import { SaleCustomer } from '../sale-customer/sale-customer.entity';
     CustomerModule,
     LabelModule,
   ],
+  exports: [ComplaintService, SaleService],
   providers: [ComplaintService, SaleService],
   controllers: [ComplaintController, SaleController],
 })
