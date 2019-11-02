@@ -3,10 +3,13 @@ import { RoleService } from './role.service';
 import { Crud } from '@nestjsx/crud';
 import { Role } from './role.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Permissions } from '../permissions.decorator';
 
-const routesOption = {
-  decorators: [UseGuards(AuthGuard())],
-};
+UseGuards(AuthGuard());
+const useGuards = UseGuards(AuthGuard());
+const create = Permissions('role_create');
+const update = Permissions('role_update');
+const remove = Permissions('role_delete');
 
 @Crud({
   model: {
@@ -25,13 +28,27 @@ const routesOption = {
     },
   },
   routes: {
-    getManyBase: routesOption,
-    getOneBase: routesOption,
-    createOneBase: routesOption,
-    createManyBase: routesOption,
-    updateOneBase: routesOption,
-    replaceOneBase: routesOption,
-    deleteOneBase: routesOption,
+    getManyBase: {
+      decorators: [useGuards],
+    },
+    getOneBase: {
+      decorators: [useGuards],
+    },
+    createOneBase: {
+      decorators: [useGuards, create],
+    },
+    createManyBase: {
+      decorators: [useGuards, create],
+    },
+    updateOneBase: {
+      decorators: [useGuards, update],
+    },
+    replaceOneBase: {
+      decorators: [useGuards, update],
+    },
+    deleteOneBase: {
+      decorators: [useGuards, remove],
+    },
   },
 })
 @Controller('role')

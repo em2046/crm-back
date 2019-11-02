@@ -16,4 +16,10 @@ export class RoleService extends TypeOrmCrudService<Role> {
   async findSome(uuidList: string[]): Promise<Role[]> {
     return await this.roleRepository.findByIds(uuidList);
   }
+
+  async findOneInner(uuid): Promise<Role> {
+    return await this.roleRepository.findOne(uuid, {
+      relations: ['permissions'],
+    });
+  }
 }

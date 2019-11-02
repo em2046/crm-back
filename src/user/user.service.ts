@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import Utils from '../utils/utils';
 import { UserLoginDto } from './dto/user-login.dto';
 import { RoleService } from '../role/role.service';
+import { Complaint } from '../task/complaint/complaint.entity';
+import { Sale } from '../task/sale/sale.entity';
 
 @Injectable()
 export class UserService {
@@ -13,6 +15,10 @@ export class UserService {
     private readonly roleService: RoleService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Complaint)
+    private readonly complaintRepository: Repository<Complaint>,
+    @InjectRepository(Sale)
+    private readonly saleRepository: Repository<Sale>,
   ) {}
 
   /**
@@ -134,6 +140,23 @@ export class UserService {
    * @param uuid
    */
   async remove(uuid: string) {
+    const user = this.userRepository.findOne(uuid);
+
+    const foundComplaint = await this.complaintRepository.findOne({
+      where: {
+        assignee: user,
+      },
+    });
+
+    const foundSale = await this.saleRepository.findOne({
+      where: {
+        assignee: user,
+      },
+    });
+    if (foundComplaint || foundSale) {
+      throw new NotAcceptableException('当前用户有正在处理中的任务');
+    }
+
     return await this.userRepository.delete(uuid);
   }
 }

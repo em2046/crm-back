@@ -10,9 +10,16 @@ import { Customer } from '../customer/customer.entity';
 import { Knowledge } from '../knowledge/knowledge.entity';
 import { Complaint } from '../task/complaint/complaint.entity';
 import { Label } from '../label/label.entity';
+import { PassportModule } from '@nestjs/passport';
+import { Sale } from '../task/sale/sale.entity';
+import { TaskModule } from '../task/task.module';
+import { SaleCustomer } from '../sale-customer/sale-customer.entity';
+import { SaleCustomerModule } from '../sale-customer/sale-customer.module';
+import { LabelModule } from '../label/label.module';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([
       User,
       Role,
@@ -21,8 +28,13 @@ import { Label } from '../label/label.entity';
       Knowledge,
       Complaint,
       Label,
+      Sale,
+      SaleCustomer,
     ]),
     UserModule,
+    TaskModule,
+    LabelModule,
+    SaleCustomerModule,
   ],
   controllers: [InstallController],
   providers: [InstallService],

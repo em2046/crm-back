@@ -13,9 +13,15 @@ import { InstallModule } from './install/install.module';
 import { TaskModule } from './task/task.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { LabelModule } from './label/label.module';
+import { StatisticsModule } from './statistics/statistics.module';
+import { SaleCustomerModule } from './sale-customer/sale-customer.module';
+import { PermissionsGuard } from './permissions.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -37,8 +43,16 @@ import { LabelModule } from './label/label.module';
     TaskModule,
     KnowledgeModule,
     LabelModule,
+    StatisticsModule,
+    SaleCustomerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}

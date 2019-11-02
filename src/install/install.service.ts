@@ -26,6 +26,8 @@ import postList from './post-list';
 import { Complaint } from '../task/complaint/complaint.entity';
 import complaintList from './complaint-list';
 import { Label } from '../label/label.entity';
+import { Sale } from '../task/sale/sale.entity';
+import { SaleService } from '../task/sale/sale.service';
 
 const fsPromises = fs.promises;
 
@@ -48,9 +50,12 @@ export class InstallService {
     private readonly knowledgeRepository: Repository<Knowledge>,
     @InjectRepository(Complaint)
     private readonly complaintRepository: Repository<Complaint>,
+    @InjectRepository(Sale)
+    private readonly saleRepository: Repository<Sale>,
     @InjectRepository(Label)
     private readonly labelRepository: Repository<Label>,
     private readonly userService: UserService,
+    private readonly saleService: SaleService,
   ) {}
 
   /**
@@ -79,6 +84,7 @@ export class InstallService {
     await this.installKnowledge();
     await this.installComplaint();
     await this.installLabel();
+    await this.installSale();
 
     return {
       code: 0,
@@ -116,7 +122,28 @@ export class InstallService {
       {
         name: 'admin',
         title: '管理员',
-        permissions: [PERMISSION.USER.CREATE, PERMISSION.USER.UPDATE],
+        permissions: [
+          PERMISSION.USER.CREATE,
+          PERMISSION.USER.UPDATE,
+          PERMISSION.USER.DELETE,
+
+          PERMISSION.ROLE.CREATE,
+          PERMISSION.ROLE.UPDATE,
+          PERMISSION.ROLE.DELETE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+          PERMISSION.KNOWLEDGE.DELETE,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+          PERMISSION.CUSTOMER.DELETE,
+
+          PERMISSION.TASK.CREATE,
+          PERMISSION.TASK.DELETE,
+          PERMISSION.TASK.ASSIGN,
+          PERMISSION.TASK.EXECUTE,
+        ],
       },
       {
         name: 'operator',
@@ -126,9 +153,29 @@ export class InstallService {
       {
         name: 'supervisor',
         title: '客服主管',
-        permissions: [PERMISSION.TASK.ASSIGN],
+        permissions: [
+          PERMISSION.TASK.ASSIGN,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+        ],
       },
-      { name: 'staff', title: '客服', permissions: [PERMISSION.TASK.EXECUTE] },
+      {
+        name: 'staff',
+        title: '客服',
+        permissions: [
+          PERMISSION.TASK.EXECUTE,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+        ],
+      },
     ];
     await this.roleRepository.save(roles);
   }
@@ -221,7 +268,7 @@ export class InstallService {
 
       const now = new Date();
       const pass = new Date();
-      pass.setFullYear(now.getFullYear() - 100);
+      pass.setFullYear(now.getFullYear() - 35);
       const birthday = new Date(Utils.randomInt(pass.getTime(), now.getTime()));
 
       customer.realName = InstallService.randomRealName(gender);
@@ -481,7 +528,7 @@ export class InstallService {
         type: 'GROUP',
         operator: 'AND',
         children: [
-          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          { type: 'RULE', rule: ['birthday', '<', '2000-12-31T16:00:00.000Z'] },
           {
             type: 'RULE',
             rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
@@ -497,7 +544,7 @@ export class InstallService {
         type: 'GROUP',
         operator: 'AND',
         children: [
-          { type: 'RULE', rule: ['birthday', '<', '1990-12-31T16:00:00.000Z'] },
+          { type: 'RULE', rule: ['birthday', '<', '2000-12-31T16:00:00.000Z'] },
           {
             type: 'RULE',
             rule: ['education', 'IN', ['bachelor', 'master', 'doctor']],
@@ -509,5 +556,32 @@ export class InstallService {
     } as Label;
     await this.labelRepository.save(label1);
     await this.labelRepository.save(label2);
+  }
+
+  private async installSale() {
+    const label1 = await this.labelRepository.findOne({
+      title: '大龄高学历未婚男性',
+    });
+    const label2 = await this.labelRepository.findOne({
+      title: '大龄高学历未婚女性',
+    });
+    const supervisor = await this.userRepository.findOne({
+      name: 'supervisor',
+    });
+
+    const s1 = {
+      title: '剃须刀营销计划',
+      description: '针对大龄高学历未婚男性特别制定的营销计划',
+      assignee: supervisor,
+      label: label1,
+    };
+    await this.saleService.create(s1);
+    const s2 = {
+      title: '口红营销计划',
+      description: '针对大龄高学历未婚女性特别制定的营销计划',
+      assignee: supervisor,
+      label: label2,
+    };
+    await this.saleService.create(s2);
   }
 }
