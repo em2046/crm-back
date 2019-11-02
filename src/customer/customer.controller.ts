@@ -3,10 +3,12 @@ import { CustomerService } from './customer.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Crud } from '@nestjsx/crud';
 import { Customer } from './customer.entity';
+import { Permissions } from '../permissions.decorator';
 
-const routesOption = {
-  decorators: [UseGuards(AuthGuard())],
-};
+const useGuards = UseGuards(AuthGuard());
+const create = Permissions('customer_create');
+const update = Permissions('customer_update');
+const remove = Permissions('customer_delete');
 
 @Crud({
   model: {
@@ -20,20 +22,35 @@ const routesOption = {
     },
   },
   routes: {
-    getManyBase: routesOption,
-    getOneBase: routesOption,
-    createOneBase: routesOption,
-    createManyBase: routesOption,
-    updateOneBase: routesOption,
-    replaceOneBase: routesOption,
-    deleteOneBase: routesOption,
+    getManyBase: {
+      decorators: [useGuards],
+    },
+    getOneBase: {
+      decorators: [useGuards],
+    },
+    createOneBase: {
+      decorators: [useGuards, create],
+    },
+    createManyBase: {
+      decorators: [useGuards, create],
+    },
+    updateOneBase: {
+      decorators: [useGuards, update],
+    },
+    replaceOneBase: {
+      decorators: [useGuards, update],
+    },
+    deleteOneBase: {
+      decorators: [useGuards, remove],
+    },
   },
 })
 @Controller('customer')
 export class CustomerController {
   constructor(public service: CustomerService) {}
 
-  @UseGuards(AuthGuard())
+  @useGuards
+  @Permissions('customer_delete')
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
     return this.service.remove(uuid);

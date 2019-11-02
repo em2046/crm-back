@@ -116,7 +116,28 @@ export class InstallService {
       {
         name: 'admin',
         title: '管理员',
-        permissions: [PERMISSION.USER.CREATE, PERMISSION.USER.UPDATE],
+        permissions: [
+          PERMISSION.USER.CREATE,
+          PERMISSION.USER.UPDATE,
+          PERMISSION.USER.DELETE,
+
+          PERMISSION.ROLE.CREATE,
+          PERMISSION.ROLE.UPDATE,
+          PERMISSION.ROLE.DELETE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+          PERMISSION.KNOWLEDGE.DELETE,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+          PERMISSION.CUSTOMER.DELETE,
+
+          PERMISSION.TASK.CREATE,
+          PERMISSION.TASK.DELETE,
+          PERMISSION.TASK.ASSIGN,
+          PERMISSION.TASK.EXECUTE,
+        ],
       },
       {
         name: 'operator',
@@ -126,9 +147,29 @@ export class InstallService {
       {
         name: 'supervisor',
         title: '客服主管',
-        permissions: [PERMISSION.TASK.ASSIGN],
+        permissions: [
+          PERMISSION.TASK.ASSIGN,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+        ],
       },
-      { name: 'staff', title: '客服', permissions: [PERMISSION.TASK.EXECUTE] },
+      {
+        name: 'staff',
+        title: '客服',
+        permissions: [
+          PERMISSION.TASK.EXECUTE,
+
+          PERMISSION.CUSTOMER.CREATE,
+          PERMISSION.CUSTOMER.UPDATE,
+
+          PERMISSION.KNOWLEDGE.CREATE,
+          PERMISSION.KNOWLEDGE.UPDATE,
+        ],
+      },
     ];
     await this.roleRepository.save(roles);
   }

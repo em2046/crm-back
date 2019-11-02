@@ -10,9 +10,11 @@ import { Customer } from '../customer/customer.entity';
 import { Knowledge } from '../knowledge/knowledge.entity';
 import { Complaint } from '../task/complaint/complaint.entity';
 import { Label } from '../label/label.entity';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([
       User,
       Role,

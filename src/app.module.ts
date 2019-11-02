@@ -17,9 +17,11 @@ import { StatisticsModule } from './statistics/statistics.module';
 import { SaleCustomerModule } from './sale-customer/sale-customer.module';
 import { PermissionsGuard } from './permissions.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',

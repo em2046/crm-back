@@ -37,6 +37,7 @@ export class LabelController {
     public customerService: CustomerService,
   ) {}
 
+  @UseGuards(AuthGuard())
   @Post('query')
   async query(@Body() queryDto) {
     return await this.customerService.query(queryDto);

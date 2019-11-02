@@ -15,6 +15,7 @@ import { UserCreateDto } from './dto/user-create.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Permissions } from '../permissions.decorator';
 
 @Controller('user')
 export class UserController {
@@ -46,6 +47,7 @@ export class UserController {
    * @param userCreateDto 用户信息
    */
   @UseGuards(AuthGuard())
+  @Permissions('user_create')
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   create(@Body() userCreateDto: UserCreateDto) {
@@ -57,9 +59,10 @@ export class UserController {
    * @param uuid 编号
    */
   @UseGuards(AuthGuard())
+  @Permissions('user_delete')
   @Delete(':uuid')
   remove(@Param('uuid') uuid) {
-    this.userService.remove(uuid);
+    return this.userService.remove(uuid);
   }
 
   /**
@@ -79,6 +82,7 @@ export class UserController {
    * @param userUpdateDto 更新数据
    */
   @UseGuards(AuthGuard())
+  @Permissions('user_update')
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':uuid')
   update(@Param('uuid') uuid, @Body() userUpdateDto: UserUpdateDto) {
