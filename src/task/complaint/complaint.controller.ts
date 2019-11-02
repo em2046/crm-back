@@ -15,6 +15,7 @@ import { ComplaintService } from './complaint.service';
 import { ComplaintMutateDto } from './dto/complaint-mutate.dto';
 import { ComplaintFindAllDto } from './dto/complaint-find-all.dto';
 import { ComplaintUpdateDto } from './dto/complaint-update.dto';
+import { Permissions } from '../../permissions.decorator';
 
 @Controller('complaint')
 export class ComplaintController {
@@ -42,11 +43,13 @@ export class ComplaintController {
    * 创建投诉
    */
   @UseGuards(AuthGuard())
+  @Permissions('task_create')
   @Post()
   create(@Body() complaintCreateDto: ComplaintCreateDto) {
     return this.complaintService.create(complaintCreateDto);
   }
 
+  @UseGuards(AuthGuard())
   @Patch(':uuid/update')
   update(@Param('uuid') uuid, @Body() complaintUpdateDto: ComplaintUpdateDto) {
     return this.complaintService.update(uuid, complaintUpdateDto);
@@ -57,6 +60,7 @@ export class ComplaintController {
    * @param uuid 编号
    * @param complaintMutateDto 数据
    */
+  @UseGuards(AuthGuard())
   @Patch(':uuid/assign')
   assign(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.assign(uuid, complaintMutateDto);
@@ -67,6 +71,7 @@ export class ComplaintController {
    * @param uuid 编号
    * @param complaintMutateDto 数据
    */
+  @UseGuards(AuthGuard())
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() complaintMutateDto: ComplaintMutateDto) {
     return this.complaintService.finish(uuid, complaintMutateDto);

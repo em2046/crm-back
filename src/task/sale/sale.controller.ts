@@ -26,16 +26,19 @@ export class SaleController {
     return this.saleService.findAll(saleFindAllDto);
   }
 
+  @UseGuards(AuthGuard())
   @Get(':uuid')
   findOne(@Param('uuid') uuid) {
     return this.saleService.findOne(uuid);
   }
 
+  @UseGuards(AuthGuard())
   @Patch(':uuid/update')
   update(@Param('uuid') uuid, @Body() saleUpdateDto: SaleUpdateDto) {
     return this.saleService.update(uuid, saleUpdateDto);
   }
 
+  @UseGuards(AuthGuard())
   @Post()
   create(@Body() saleCreateDto: SaleCreateDto) {
     return this.saleService.create(saleCreateDto);
@@ -46,6 +49,7 @@ export class SaleController {
    * @param uuid 编号
    * @param saleMutateDto 数据
    */
+  @UseGuards(AuthGuard())
   @Patch(':uuid/assign')
   assign(@Param('uuid') uuid, @Body() saleMutateDto: SaleMutateDto) {
     return this.saleService.assign(uuid, saleMutateDto);
@@ -56,6 +60,7 @@ export class SaleController {
    * @param uuid 编号
    * @param saleMutateDto 数据
    */
+  @UseGuards(AuthGuard())
   @Patch(':uuid/finish')
   finish(@Param('uuid') uuid, @Body() saleMutateDto: SaleMutateDto) {
     return this.saleService.finish(uuid, saleMutateDto);

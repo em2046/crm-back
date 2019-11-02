@@ -15,6 +15,8 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
 import { LabelModule } from './label/label.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { SaleCustomerModule } from './sale-customer/sale-customer.module';
+import { PermissionsGuard } from './permissions.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -43,6 +45,12 @@ import { SaleCustomerModule } from './sale-customer/sale-customer.module';
     SaleCustomerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}
