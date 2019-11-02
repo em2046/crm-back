@@ -1,13 +1,12 @@
-import { Entity, JoinTable, ManyToMany } from 'typeorm';
+import { Entity, OneToMany } from 'typeorm';
 import { Task } from '../task.entity';
-import { Customer } from '../../customer/customer.entity';
+import { SaleCustomer } from '../../sale-customer/sale-customer.entity';
 
 /**
  * 销售
  */
 @Entity()
 export class Sale extends Task {
-  @ManyToMany(() => Customer)
-  @JoinTable()
-  customers: Customer[];
+  @OneToMany(() => SaleCustomer, saleCustomer => saleCustomer.sale)
+  public saleCustomers: SaleCustomer[];
 }

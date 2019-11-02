@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './customer.entity';
 import { getConnection, Repository } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { SaleCustomer } from '../sale-customer/sale-customer.entity';
 
 function jsonToSql(json) {
   const type = json.type;
@@ -46,6 +47,8 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
+    @InjectRepository(SaleCustomer)
+    private readonly saleCustomerRepository: Repository<SaleCustomer>,
   ) {
     super(customerRepository);
   }
@@ -54,5 +57,16 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
     const sql = jsonToSql(queryDto);
     const connection = getConnection();
     return await connection.query(`SELECT * FROM customer where ${sql}`);
+  }
+
+  async remove(uuid: string) {
+    this.saleCustomerRepository
+      .createQueryBuilder()
+      .delete()
+      .from(SaleCustomer)
+      .where('customer.uuid = :uuid', { uuid })
+      .execute();
+
+    return await this.customerRepository.delete(uuid);
   }
 }

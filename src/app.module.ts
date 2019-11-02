@@ -14,6 +14,7 @@ import { TaskModule } from './task/task.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { LabelModule } from './label/label.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { SaleCustomerModule } from './sale-customer/sale-customer.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     KnowledgeModule,
     LabelModule,
     StatisticsModule,
+    SaleCustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

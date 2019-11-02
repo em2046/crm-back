@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Param, UseGuards } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Crud } from '@nestjsx/crud';
@@ -32,4 +32,10 @@ const routesOption = {
 @Controller('customer')
 export class CustomerController {
   constructor(public service: CustomerService) {}
+
+  @UseGuards(AuthGuard())
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid) {
+    return this.service.remove(uuid);
+  }
 }

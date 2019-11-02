@@ -13,12 +13,15 @@ import Filter from '../../utils/filter';
 import { SaleMutateDto } from './dto/sale-mutate.dto';
 import { SaleUpdateDto } from './dto/sale-update.dto';
 import { Complaint } from '../complaint/complaint.entity';
+import { SaleCustomer } from '../../sale-customer/sale-customer.entity';
 
 @Injectable()
 export class SaleService {
   constructor(
     @InjectRepository(Sale)
     private readonly saleRepository: Repository<Sale>,
+    @InjectRepository(SaleCustomer)
+    private readonly saleCustomerRepository: Repository<SaleCustomer>,
     private readonly userService: UserService,
     private readonly labelService: LabelService,
     private readonly customerService: CustomerService,
@@ -47,24 +50,30 @@ export class SaleService {
     const foundLabel = await this.labelService.findOne(label.uuid);
     const customersRaw = await this.customerService.query(foundLabel.rule);
 
-    const customerList = customersRaw.map(customer => {
-      return customer.uuid;
-    });
-
-    let customers = [];
-    if (customerList.length) {
-      customers = await this.customerService.find({
-        uuid: In(customerList),
-      });
-    }
-
     const newSale = new Sale();
     newSale.assignee = saleCreateDto.assignee;
     newSale.title = saleCreateDto.title;
     newSale.description = saleCreateDto.description;
     newSale.status = TaskStatus.CREATED;
-    newSale.customers = customers;
-    return await this.saleRepository.save(newSale);
+
+    const saleRet = await this.saleRepository.save(newSale);
+
+    const saleCustomerList = [];
+    customersRaw.forEach(customer => {
+      const saleCustomer = new SaleCustomer();
+      saleCustomer.customer = customer;
+      saleCustomer.sale = saleRet;
+      saleCustomerList.push(saleCustomer);
+    });
+
+    await this.saleCustomerRepository
+      .createQueryBuilder()
+      .insert()
+      .into(SaleCustomer)
+      .values(saleCustomerList)
+      .execute();
+
+    return saleRet;
   }
 
   async findAll(saleFindAllDto: SaleFindAllDto) {
@@ -96,13 +105,35 @@ export class SaleService {
 
   async findOne(uuid: string) {
     const sale = await this.saleRepository.findOne(uuid, {
-      relations: ['assignee', 'customers'],
+      relations: ['assignee', 'saleCustomers'],
     });
     sale.assignee = Filter.userFilter(sale.assignee) as User;
+
+    const saleCustomerUuidList = sale.saleCustomers.map(saleCustomer => {
+      return saleCustomer.uuid;
+    });
+
+    let saleCustomers = [];
+    if (saleCustomerUuidList.length) {
+      saleCustomers = await this.saleCustomerRepository.find({
+        relations: ['customer'],
+        where: { uuid: In(saleCustomerUuidList) },
+      });
+    }
+
+    sale.saleCustomers = saleCustomers;
+
     return sale;
   }
 
   async remove(uuid: string) {
+    this.saleCustomerRepository
+      .createQueryBuilder()
+      .delete()
+      .from(SaleCustomer)
+      .where('sale.uuid = :uuid', { uuid })
+      .execute();
+
     return await this.saleRepository.delete(uuid);
   }
 

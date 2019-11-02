@@ -13,11 +13,19 @@ import { User } from '../user/user.entity';
 import { Customer } from '../customer/customer.entity';
 import { CustomerModule } from '../customer/customer.module';
 import { LabelModule } from '../label/label.module';
+import { SaleCustomer } from '../sale-customer/sale-customer.entity';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([Complaint, Sale, Label, User, Customer]),
+    TypeOrmModule.forFeature([
+      Complaint,
+      Sale,
+      Label,
+      User,
+      Customer,
+      SaleCustomer,
+    ]),
     UserModule,
     CustomerModule,
     LabelModule,

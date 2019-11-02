@@ -1,4 +1,10 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import {
   IsAscii,
   IsEmail,
@@ -14,6 +20,7 @@ import {
   Min,
 } from 'class-validator';
 import Utils from '../utils/utils';
+import { SaleCustomer } from '../sale-customer/sale-customer.entity';
 
 /**
  * 用户类型
@@ -314,4 +321,7 @@ export class Customer {
   @IsEmail({}, { message: Utils.errorMessage.isEmail('邮箱地址') })
   @Column({ length: 512, nullable: true })
   email: string;
+
+  @OneToMany(() => SaleCustomer, saleCustomer => saleCustomer.customer)
+  public saleCustomers: SaleCustomer[];
 }
